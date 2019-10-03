@@ -17,18 +17,32 @@ import javafx.scene.image.ImageView;
 import clasesAyuda.*;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageViewBuilder;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import proyectoproyectoprogra.MotorClases.TwitterBot;
+import twitter4j.Status;
 import twitter4j.TwitterException;
 
 /**
@@ -65,7 +79,7 @@ public class InicioController implements Initializable,CambiaEscenas {
     @FXML
     private Button botonCambiarRespuestas;
     @FXML
-    private Pane actividadReciente;
+    private ScrollPane actividadReciente;
     @FXML
     private Pane planoRespuestas;
     @FXML
@@ -133,9 +147,17 @@ public class InicioController implements Initializable,CambiaEscenas {
     @FXML
     private Button Retwetear;
     
+    private List<Status> statuses;
+    @FXML
+    private Button enviarArchivo;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        try {
+            // TODO
+            mostrarTimeline();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
         tweet.setVisible(false);
         enviar.setVisible(false);
         tweet.setWrapText(true);
@@ -180,6 +202,7 @@ public class InicioController implements Initializable,CambiaEscenas {
         volverLike.setVisible(false);
         idReTweet.setVisible(false);
         idLike.setVisible(false);
+        enviarArchivo.setVisible(false);
     }    
 
     @FXML
@@ -211,11 +234,76 @@ public class InicioController implements Initializable,CambiaEscenas {
             mostrarTweetear(false);
             tweet.clear();
             TwitterBot bot = new TwitterBot();
-            bot.Tweetear(textos.getMensajeTweet());
+            bot.tweetear(textos.getMensajeTweet());
             maximo.setText("0");
         } catch (TwitterException ex) {
             mostrarError(ex.getErrorMessage());
             maximo.setText("0");
+        }
+    }
+    
+    private void mostrarTimeline() throws IOException{
+        try {
+            TwitterBot bot = new TwitterBot();
+            statuses = bot.obtenerTimeline();
+            GridPane timeline = new GridPane();
+            timeline.setPrefSize(statuses.size()*50, statuses.size()*300);
+            timeline.setMinSize(statuses.size()*50, statuses.size()*300);
+            timeline.setMaxSize(statuses.size()*50, statuses.size()*300);
+            ColumnConstraints column = new ColumnConstraints(300);
+            timeline.getColumnConstraints().add(column);
+            for (int i = 0; i < statuses.size(); i++) {
+                RowConstraints row = new RowConstraints(250);
+                timeline.getRowConstraints().add(row);
+            }
+            for (int j = 0; j < statuses.size(); j++) {
+                GridPane tweet = new GridPane();
+                tweet.setPrefSize(statuses.size(), statuses.size());
+                tweet.setMinSize(statuses.size(), statuses.size());
+                tweet.setMaxSize(statuses.size(), statuses.size());
+                ColumnConstraints column2 = new ColumnConstraints(300);
+                tweet.getColumnConstraints().add(column);
+                RowConstraints row1 = new RowConstraints(50);
+                RowConstraints row2 = new RowConstraints(150);
+                RowConstraints row3 = new RowConstraints(50);
+                tweet.getRowConstraints().add(row1);
+                tweet.getRowConstraints().add(row2);
+                tweet.getRowConstraints().add(row3);
+                for (int i = 0; i < 3; i++) {
+                    HBox casilla1 = new HBox();
+                    HBox casilla2 = new HBox();
+                    Label texto = new Label();
+                    ImageView foto = ImageViewBuilder.create().image(new Image(statuses.get(j).getUser().get400x400ProfileImageURL())).build();
+                    foto.setFitHeight(50);
+                    foto.setFitWidth(50);
+                    Label id = new Label();
+                    id.setText(statuses.get(j).getUser().getName());
+                    texto.setText(statuses.get(j).getText());
+                    texto.setWrapText(true);
+                    Button like = new Button();
+                    Button retweet = new Button();
+                    texto.setPrefSize(600, 600);
+                    like.setText("Like");
+                    like.setPrefSize(100, 100);
+                    retweet.setText("Retweet");
+                    retweet.setPrefSize(100, 100);
+                    casilla1.setSpacing(10);
+                    casilla2.setSpacing(10);
+                    casilla2.setPadding(new Insets(10));
+                    casilla1.getChildren().addAll(foto,id);
+                    casilla2.getChildren().addAll(like,retweet);
+                    tweet.add(casilla1, 0, 0);
+                    tweet.add(texto, 0, 1);
+                    tweet.add(casilla2, 0, 2);
+                }
+                timeline.add(tweet, 0, j);
+            }
+            actividadReciente.setContent(timeline);
+            actividadReciente.fitToWidthProperty().set(true);
+            actividadReciente.fitToHeightProperty().set(true);
+            actividadReciente.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
+        } catch (TwitterException ex) {
+            mostrarError(ex.getMessage());
         }
     }
 
@@ -354,6 +442,7 @@ public class InicioController implements Initializable,CambiaEscenas {
         maximo.setVisible(valor);
         lim.setVisible(valor);
         volverTweet.setVisible(valor);
+        enviarArchivo.setVisible(valor);
     }
 
     @Override
