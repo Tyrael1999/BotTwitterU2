@@ -38,7 +38,7 @@ public class TwitterBot {
      * @param mensaje String que contiene el mensaje
      * @throws TwitterException 
      */
-    public void Tweetear(String mensaje) throws TwitterException{
+    public void tweetear(String mensaje) throws TwitterException{
         twitter.updateStatus(mensaje);
     }
     /**
@@ -60,18 +60,11 @@ public class TwitterBot {
     }
     /**
      * Metodo que permite obtener la timeline de la cuenta asignada a la aplicacion
+     * @return lista de status de la timeline
+     * @throws TwitterException
      */
-    public void obtenerTimeline(){
-        try {
-            List<Status> statuses = twitter.getHomeTimeline();
-            for (Status status : statuses) {
-                System.out.println("@" + status.getUser().getScreenName() + " - " + status.getText()+" - "+status.getId());
-            }
-        } catch (TwitterException te) {
-            te.printStackTrace();
-            System.out.println("Failed to get timeline: " + te.getMessage());
-            System.exit(-1);
-        }
+    public List<Status> obtenerTimeline() throws TwitterException{
+        return twitter.getHomeTimeline();
     }
     /**
      * Metodo que da "like" a un tweet determinado
