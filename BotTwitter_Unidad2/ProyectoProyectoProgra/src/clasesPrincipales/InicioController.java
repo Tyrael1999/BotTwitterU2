@@ -258,11 +258,11 @@ public class InicioController implements Initializable,CambiaEscenas {
             }
             for (int j = 0; j < statuses.size(); j++) {
                 GridPane tweet = new GridPane();
-                tweet.setPrefSize(statuses.size(), statuses.size());
-                tweet.setMinSize(statuses.size(), statuses.size());
-                tweet.setMaxSize(statuses.size(), statuses.size());
+                tweet.setPrefSize(320, 250);
+                tweet.setMinSize(320, 250);
+                tweet.setMaxSize(320, 250);
                 ColumnConstraints column2 = new ColumnConstraints(300);
-                tweet.getColumnConstraints().add(column);
+                tweet.getColumnConstraints().add(column2);
                 RowConstraints row1 = new RowConstraints(50);
                 RowConstraints row2 = new RowConstraints(150);
                 RowConstraints row3 = new RowConstraints(50);
@@ -280,8 +280,34 @@ public class InicioController implements Initializable,CambiaEscenas {
                     id.setText(statuses.get(j).getUser().getName());
                     texto.setText(statuses.get(j).getText());
                     texto.setWrapText(true);
+                    textos = new Mensajes();
+                    textos.setId(statuses.get(j).getId());
                     Button like = new Button();
+                    like.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            try {
+                                bot.likeTweet(textos.getId());
+                            } catch (TwitterException ex) {
+                                try {
+                                    mostrarError(ex.getErrorMessage());
+                                } catch (IOException ex1) { }
+                            }
+                        }
+                    });
                     Button retweet = new Button();
+                    retweet.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            try {
+                                bot.retweet(textos.getId());
+                            } catch (TwitterException ex) {
+                                try {
+                                    mostrarError(ex.getMessage());
+                                } catch (IOException ex1) { }
+                            }
+                        }
+                    });
                     texto.setPrefSize(600, 600);
                     like.setText("Like");
                     like.setPrefSize(100, 100);
@@ -296,6 +322,7 @@ public class InicioController implements Initializable,CambiaEscenas {
                     tweet.add(texto, 0, 1);
                     tweet.add(casilla2, 0, 2);
                 }
+                tweet.setStyle("-fx-border-color:black");
                 timeline.add(tweet, 0, j);
             }
             actividadReciente.setContent(timeline);
