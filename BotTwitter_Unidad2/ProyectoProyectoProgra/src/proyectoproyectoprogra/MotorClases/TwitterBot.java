@@ -33,6 +33,10 @@ public class TwitterBot {
           .setOAuthAccessTokenSecret("I3bD1Hk3QiIO7xNueP3Hq81LrSdfhapmqRJEaa5Er8xOv");
         twitter = new TwitterFactory(cb.build()).getInstance();
     }
+    
+    public void eliminarTweet(long id) throws TwitterException{
+        twitter.destroyStatus(id);
+    }
     /**
      * Metodo que publica un String en el muro de la cuenta ligada al bot
      * @param mensaje String que contiene el mensaje
@@ -74,6 +78,9 @@ public class TwitterBot {
     public void likeTweet(long id) throws TwitterException{
         twitter.createFavorite(id);
     }
+    public void dislikeTweet(long id)throws TwitterException{
+        twitter.destroyFavorite(id);
+    }
     /**
      * Metodo que retweetea un tweet determinado
      * @param id identificador unico del tweet a retweetear
@@ -81,6 +88,12 @@ public class TwitterBot {
      */
     public void retweet(long id) throws TwitterException{
         twitter.retweetStatus(id);
+    }
+    public List<Status> retweetList(long id) throws TwitterException{
+        return twitter.getRetweets(id);
+    }
+    public long getOwnId() throws TwitterException{
+        return twitter.getId();
     }
 }
 
