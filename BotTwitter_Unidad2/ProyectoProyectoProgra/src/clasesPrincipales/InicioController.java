@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import clasesAyuda.*;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -42,6 +43,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import proyectoproyectoprogra.MotorClases.TwitterBot;
 import twitter4j.Status;
@@ -243,6 +245,7 @@ public class InicioController implements Initializable,CambiaEscenas {
             mostrarError(ex.getErrorMessage());
             maximo.setText("0");
         }
+        
     }
     
     private void mostrarTimeline() throws IOException{
@@ -662,5 +665,22 @@ public class InicioController implements Initializable,CambiaEscenas {
         }catch(TwitterException ex){
             mostrarError(ex.getErrorMessage());
         }
+    }
+
+    @FXML
+    private void subirArchivo(ActionEvent event) {  
+            System.out.println("subir archivo..");
+            FileChooser fc = new FileChooser();
+            String ruta;
+            File selectedFile = fc.showOpenDialog(null);
+            if (selectedFile != null) {
+                ruta = selectedFile.getName();
+                System.out.println("tomado "+ruta);
+            }
+            else{
+                System.out.println("archivo no valido");
+            }
+  
+        
     }
 }
