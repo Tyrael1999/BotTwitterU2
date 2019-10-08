@@ -4,9 +4,11 @@
  * and open the template in the editor.
  */
 package proyectoproyectoprogra.MotorClases;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import twitter4j.Status;
+import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -44,6 +46,12 @@ public class TwitterBot {
      */
     public void tweetear(String mensaje) throws TwitterException{
         twitter.updateStatus(mensaje);
+    }
+    
+    public void tweetear(String mensaje, File imagen) throws TwitterException{
+        StatusUpdate status = new StatusUpdate(mensaje);
+        status.setMedia(imagen);
+        twitter.updateStatus(status);
     }
     /**
      * Metodo que mediante una id, sigue a un determinado usuario

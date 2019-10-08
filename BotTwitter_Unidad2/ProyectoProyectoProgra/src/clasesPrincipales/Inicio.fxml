@@ -14,7 +14,7 @@
 
 <AnchorPane id="AnchorPane" prefHeight="556.0" prefWidth="769.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clasesPrincipales.InicioController">
    <children>
-      <Button fx:id="enviarArchivo" layoutX="410.0" layoutY="420.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="120.0" text="Enviar Archivo" />
+      <Button fx:id="enviarArchivo" layoutX="410.0" layoutY="420.0" mnemonicParsing="false" onAction="#subirArchivo" prefHeight="35.0" prefWidth="120.0" text="Enviar Archivo" />
       <TextArea fx:id="mensajePrivado" layoutX="404.0" layoutY="291.0" onKeyPressed="#limites" onKeyReleased="#limites" prefHeight="141.0" prefWidth="265.0" promptText="Mensaje" />
       <TextArea fx:id="cuenta" layoutX="404.0" layoutY="174.0" prefHeight="35.0" prefWidth="265.0" promptText="Destinatario" />
       <TextArea fx:id="seguirCuenta" layoutX="412.0" layoutY="274.0" prefHeight="35.0" prefWidth="250.0" promptText="Usuario" />
