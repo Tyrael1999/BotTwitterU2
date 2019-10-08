@@ -154,6 +154,8 @@ public class InicioController implements Initializable,CambiaEscenas {
     private List<Status> statuses;
     @FXML
     private Button enviarArchivo;
+    
+    private File selectedFile;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
@@ -238,7 +240,11 @@ public class InicioController implements Initializable,CambiaEscenas {
             mostrarTweetear(false);
             tweet.clear();
             TwitterBot bot = new TwitterBot();
-            bot.tweetear(textos.getMensajeTweet());
+            if(selectedFile.isFile()){
+                bot.tweetear(textos.getMensajeTweet(), selectedFile);
+            }else{
+                bot.tweetear(textos.getMensajeTweet());
+            }
             maximo.setText("0");
             mostrarTimeline();
         } catch (TwitterException ex) {
@@ -666,21 +672,12 @@ public class InicioController implements Initializable,CambiaEscenas {
             mostrarError(ex.getErrorMessage());
         }
     }
-
+    
     @FXML
     private void subirArchivo(ActionEvent event) {  
             System.out.println("subir archivo..");
             FileChooser fc = new FileChooser();
             String ruta;
-            File selectedFile = fc.showOpenDialog(null);
-            if (selectedFile != null) {
-                ruta = selectedFile.getName();
-                System.out.println("tomado "+ruta);
-            }
-            else{
-                System.out.println("archivo no valido");
-            }
-  
-        
-    }
+            selectedFile = fc.showOpenDialog(null);
+    }   
 }
