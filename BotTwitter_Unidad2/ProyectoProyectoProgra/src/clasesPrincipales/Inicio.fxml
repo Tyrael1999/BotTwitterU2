@@ -9,80 +9,63 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" prefHeight="556.0" prefWidth="769.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clasesPrincipales.InicioController">
+<AnchorPane id="AnchorPane" prefHeight="556.0" prefWidth="795.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clasesPrincipales.InicioController">
    <children>
-      <Button fx:id="enviarArchivo" layoutX="410.0" layoutY="420.0" mnemonicParsing="false" onAction="#subirArchivo" prefHeight="35.0" prefWidth="120.0" text="Enviar Archivo" />
-      <TextArea fx:id="mensajePrivado" layoutX="404.0" layoutY="291.0" onKeyPressed="#limites" onKeyReleased="#limites" prefHeight="141.0" prefWidth="265.0" promptText="Mensaje" />
-      <TextArea fx:id="cuenta" layoutX="404.0" layoutY="174.0" prefHeight="35.0" prefWidth="265.0" promptText="Destinatario" />
-      <TextArea fx:id="seguirCuenta" layoutX="412.0" layoutY="274.0" prefHeight="35.0" prefWidth="250.0" promptText="Usuario" />
-      <Button fx:id="enviar" layoutX="412.0" layoutY="178.0" mnemonicParsing="false" onAction="#enviar" prefHeight="35.0" prefWidth="120.0" text="Enviar" />
-      <Button fx:id="volverTweet" layoutX="547.0" layoutY="178.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="35.0" prefWidth="120.0" text="Volver" />
-      <ImageView fx:id="Fondo" fitHeight="118.0" fitWidth="443.0" layoutX="219.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="371.0" AnchorPane.rightAnchor="107.0" AnchorPane.topAnchor="17.0">
+      <Button fx:id="enviarArchivo" layoutX="521.0" layoutY="417.0" mnemonicParsing="false" onAction="#subirArchivo" prefHeight="35.0" prefWidth="120.0" text="Enviar Archivo" />
+      <TextArea fx:id="mensajePrivado" layoutX="515.0" layoutY="288.0" onKeyPressed="#limites" onKeyReleased="#limites" prefHeight="141.0" prefWidth="265.0" promptText="Mensaje" />
+      <TextArea fx:id="cuenta" layoutX="515.0" layoutY="171.0" prefHeight="35.0" prefWidth="265.0" promptText="Destinatario" />
+      <TextArea fx:id="seguirCuenta" layoutX="523.0" layoutY="271.0" prefHeight="35.0" prefWidth="250.0" promptText="Usuario" />
+      <Button fx:id="enviar" layoutX="523.0" layoutY="175.0" mnemonicParsing="false" onAction="#enviar" prefHeight="35.0" prefWidth="120.0" text="Enviar" />
+      <Button fx:id="volverTweet" layoutX="658.0" layoutY="175.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="35.0" prefWidth="120.0" text="Volver" />
+      <ImageView fx:id="Fondo" fitHeight="118.0" fitWidth="277.0" layoutX="495.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="495.0" AnchorPane.rightAnchor="57.0" AnchorPane.topAnchor="14.0">
          <image>
             <Image url="@../imagenes/fondoV2.jpg" />
          </image>
       </ImageView>
-      <ImageView fx:id="perfil" fitHeight="51.0" fitWidth="59.0" layoutX="586.0" layoutY="97.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="124.0" AnchorPane.topAnchor="97.0">
+      <ImageView fx:id="perfil" fitHeight="51.0" fitWidth="59.0" layoutX="697.0" layoutY="92.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="73.0" AnchorPane.topAnchor="92.0">
          <image>
             <Image url="@../imagenes/perfil.jpg" />
          </image>
       </ImageView>
-      <Text layoutX="18.0" layoutY="123.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Actividad reciente" />
-      <Button fx:id="change" layoutX="685.0" layoutY="76.0" mnemonicParsing="false" onAction="#handleChangeText" prefHeight="31.0" prefWidth="77.0" text="Cambiar">
-         <font>
-            <Font size="10.0" />
-         </font>
-      </Button>
-      <Button fx:id="twittear" layoutX="411.0" layoutY="178.0" mnemonicParsing="false" onAction="#handleTwittear" prefHeight="35.0" prefWidth="120.0" text="Twittear" />
-      <Button fx:id="Follow" layoutX="547.0" layoutY="178.0" mnemonicParsing="false" onAction="#handleFollow" prefHeight="35.0" prefWidth="120.0" text="Seguir Cuenta" />
-      <Button fx:id="Repli" layoutX="465.0" layoutY="403.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" text="Responder a tweets" />
-      <Label fx:id="Respuesta" layoutX="685.0" layoutY="20.0" prefHeight="87.0" prefWidth="25.0" style="-fx-border-color: black;" />
-      <TextArea fx:id="cambioRespuesta" layoutX="22.0" layoutY="14.0" onKeyTyped="#limites" prefHeight="87.0" prefWidth="86.0" />
-      <Button fx:id="confirmar" layoutX="685.0" layoutY="117.0" mnemonicParsing="false" onAction="#confirm" prefHeight="35.0" prefWidth="77.0" text="Finalizar" />
-      <TextArea fx:id="tweet" layoutX="404.0" layoutY="229.0" onKeyPressed="#limites" onKeyReleased="#limites" prefHeight="160.0" prefWidth="265.0" />
-      <Button fx:id="botonCambiarRespuestas" layoutX="404.0" layoutY="332.0" mnemonicParsing="false" onAction="#abrirCambiaRespuesta" prefHeight="50.0" prefWidth="265.0" text="Cambiar mensajes de respuesta" />
-      <Pane fx:id="planoRespuestas" layoutX="385.0" layoutY="143.0" prefHeight="396.0" prefWidth="297.0" style="-fx-border-color: black;">
+      <Text layoutX="14.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Actividad reciente" />
+      <Button fx:id="twittear" layoutX="550.0" layoutY="150.0" mnemonicParsing="false" onAction="#handleTwittear" prefHeight="50.0" prefWidth="200.0" text="Twittear" />
+      <Button fx:id="Follow" layoutX="550.0" layoutY="225.0" mnemonicParsing="false" onAction="#handleFollow" prefHeight="50.0" prefWidth="200.0" text="Seguir Cuenta" />
+      <Button fx:id="Repli" layoutX="550.0" layoutY="300.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" text="Responder a tweets" />
+      <TextArea fx:id="tweet" layoutX="515.0" layoutY="226.0" onKeyPressed="#limites" onKeyReleased="#limites" prefHeight="160.0" prefWidth="265.0" />
+      <Button fx:id="botonCambiarRespuestas" layoutX="550.0" layoutY="375.0" mnemonicParsing="false" onAction="#abrirCambiaRespuesta" prefHeight="50.0" prefWidth="200.0" text="Cambiar mensajes de respuesta" />
+      <Pane fx:id="planoRespuestas" layoutX="496.0" layoutY="140.0" prefHeight="396.0" prefWidth="277.0" style="-fx-border-color: black;">
          <children>
-            <Button fx:id="cambiarMensajeAutomatico" layoutX="188.0" layoutY="18.0" mnemonicParsing="false" onAction="#cambiarReacciones" prefHeight="17.0" prefWidth="95.0" text="Cambiar" />
-            <Text fx:id="encabezado1" layoutX="20.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Respuesta a reacciones" wrappingWidth="143.0" />
-            <Label fx:id="mensaje1" layoutX="20.0" layoutY="50.0" prefHeight="50.0" prefWidth="265.0" text="Label" />
-            <Label fx:id="mensaje2" layoutX="20.0" layoutY="155.0" prefHeight="50.0" prefWidth="265.0" text="Label" />
-            <Text fx:id="encabezado2" layoutX="20.0" layoutY="151.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mensaje Privado" wrappingWidth="134.13671875" />
-            <Button fx:id="cambiarMensajePrivado" layoutX="188.0" layoutY="134.0" mnemonicParsing="false" onAction="#cambiarPrivado" prefHeight="17.0" prefWidth="95.0" text="Cambiar" />
-            <Button fx:id="guardarMensajes" layoutX="163.0" layoutY="318.0" mnemonicParsing="false" onAction="#guardarCambios" prefHeight="25.0" prefWidth="120.0" text="Guardar Cambios" />
-            <Button fx:id="predeterminado" layoutX="20.0" layoutY="318.0" mnemonicParsing="false" onAction="#volverPredeterminado" prefHeight="25.0" prefWidth="120.0" text="Predeterminado" />
-            <TextArea fx:id="cambios" layoutX="19.0" layoutY="212.0" onKeyTyped="#limites" prefHeight="81.0" prefWidth="265.0" />
-            <Button fx:id="volver" layoutX="105.0" layoutY="357.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="25.0" prefWidth="95.0" text="volver" />
+            <Button fx:id="cambiarMensajeAutomatico" layoutX="175.0" layoutY="16.0" mnemonicParsing="false" onAction="#cambiarReacciones" prefHeight="17.0" prefWidth="95.0" text="Cambiar" />
+            <Text fx:id="encabezado1" layoutX="7.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Respuesta a reacciones" wrappingWidth="143.0" />
+            <Label fx:id="mensaje1" layoutX="7.0" layoutY="48.0" prefHeight="50.0" prefWidth="265.0" text="Label" />
+            <Label fx:id="mensaje2" layoutX="7.0" layoutY="153.0" prefHeight="50.0" prefWidth="265.0" text="Label" />
+            <Text fx:id="encabezado2" layoutX="7.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mensaje Privado" wrappingWidth="134.13671875" />
+            <Button fx:id="cambiarMensajePrivado" layoutX="175.0" layoutY="132.0" mnemonicParsing="false" onAction="#cambiarPrivado" prefHeight="17.0" prefWidth="95.0" text="Cambiar" />
+            <Button fx:id="guardarMensajes" layoutX="150.0" layoutY="316.0" mnemonicParsing="false" onAction="#guardarCambios" prefHeight="25.0" prefWidth="120.0" text="Guardar Cambios" />
+            <Button fx:id="predeterminado" layoutX="7.0" layoutY="316.0" mnemonicParsing="false" onAction="#volverPredeterminado" prefHeight="25.0" prefWidth="120.0" text="Predeterminado" />
+            <TextArea fx:id="cambios" layoutX="6.0" layoutY="210.0" onKeyTyped="#limites" prefHeight="81.0" prefWidth="265.0" />
+            <Button fx:id="volver" layoutX="92.0" layoutY="355.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="25.0" prefWidth="95.0" text="volver" />
          </children>
       </Pane>
-      <HBox layoutX="666.0" layoutY="395.0">
+      <HBox layoutX="777.0" layoutY="392.0">
          <children>
             <Label fx:id="maximo" text="0" />
             <Label fx:id="lim" text="/280" />
          </children>
       </HBox>
-      <Button fx:id="enviarMensajePrivado" layoutX="465.0" layoutY="230.0" mnemonicParsing="false" onAction="#escribirMensajePriv" prefHeight="35.0" prefWidth="150.0" text="Enviar Mensaje Privado" />
-      <Button fx:id="enviar2" layoutX="412.0" layoutY="230.0" mnemonicParsing="false" onAction="#enviarMensajePrivado" prefHeight="35.0" prefWidth="120.0" text="Enviar" />
-      <Button fx:id="volverMensaje" layoutX="547.0" layoutY="230.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="35.0" prefWidth="120.0" text="Volver" />
-      <Button fx:id="seguir" layoutX="412.0" layoutY="230.0" mnemonicParsing="false" onAction="#seguir" prefHeight="35.0" prefWidth="120.0" text="Seguir" />
-      <Button fx:id="volverSeguir" layoutX="547.0" layoutY="230.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="35.0" prefWidth="120.0" text="Volver" />
-      <HBox layoutX="666.0" layoutY="434.0">
+      <Button fx:id="enviarMensajePrivado" layoutX="550.0" layoutY="450.0" mnemonicParsing="false" onAction="#escribirMensajePriv" prefHeight="50.0" prefWidth="200.0" text="Enviar Mensaje Privado" />
+      <Button fx:id="enviar2" layoutX="523.0" layoutY="227.0" mnemonicParsing="false" onAction="#enviarMensajePrivado" prefHeight="35.0" prefWidth="120.0" text="Enviar" />
+      <Button fx:id="volverMensaje" layoutX="658.0" layoutY="227.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="35.0" prefWidth="120.0" text="Volver" />
+      <Button fx:id="seguir" layoutX="523.0" layoutY="227.0" mnemonicParsing="false" onAction="#seguir" prefHeight="35.0" prefWidth="120.0" text="Seguir" />
+      <Button fx:id="volverSeguir" layoutX="658.0" layoutY="227.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="35.0" prefWidth="120.0" text="Volver" />
+      <HBox layoutX="777.0" layoutY="431.0">
          <children>
             <Label fx:id="maxMensaje" text="0" />
             <Label fx:id="limMens" text="/10000" />
          </children>
       </HBox>
-      <Button fx:id="retweet" layoutX="412.0" layoutY="284.0" mnemonicParsing="false" onAction="#handleRetweet" prefHeight="35.0" prefWidth="120.0" text="Retweet" />
-      <Button fx:id="like" layoutX="547.0" layoutY="284.0" mnemonicParsing="false" onAction="#handelLike" prefHeight="35.0" prefWidth="120.0" text="Like" />
-      <TextArea fx:id="idReTweet" layoutX="412.0" layoutY="274.0" prefHeight="35.0" prefWidth="250.0" promptText="ID del tweet" />
-      <TextArea fx:id="idLike" layoutX="412.0" layoutY="274.0" prefHeight="35.0" prefWidth="250.0" promptText="ID del tweet" />
-      <Button fx:id="volverLike" layoutX="547.0" layoutY="230.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="35.0" prefWidth="120.0" text="Volver" />
-      <Button fx:id="volverRetweet" layoutX="547.0" layoutY="230.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="35.0" prefWidth="120.0" text="Volver" />
-      <Button fx:id="Likear" layoutX="412.0" layoutY="230.0" mnemonicParsing="false" onAction="#like" prefHeight="35.0" prefWidth="120.0" text="Ok" />
-      <Button fx:id="Retwetear" layoutX="412.0" layoutY="230.0" mnemonicParsing="false" onAction="#retweet" prefHeight="35.0" prefWidth="120.0" text="Ok" />
-      <ScrollPane fx:id="actividadReciente" layoutX="22.0" layoutY="152.0" maxHeight="400.0" maxWidth="350.0" minHeight="400.0" minWidth="350.0" prefHeight="400.0" prefWidth="350.0" />
+      <ScrollPane fx:id="actividadReciente" layoutX="13.0" layoutY="34.0" maxHeight="504.0" maxWidth="479.0" minHeight="400.0" minWidth="350.0" prefHeight="504.0" prefWidth="479.0" />
    </children>
 </AnchorPane>

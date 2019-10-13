@@ -16,6 +16,4 @@ public interface CambiaEscenas {
     public void mostrarSeguir(boolean valor);
     public void mostrarMensajesPrivados(boolean valor);
     public void mostrarMensajesPredeterminados(boolean valor);
-    public void mostrarLike(boolean valor);
-    public void mostrarRetweet(boolean valor);
 }

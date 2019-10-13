@@ -61,25 +61,17 @@ public class InicioController implements Initializable,CambiaEscenas {
     @FXML
     private ImageView perfil;
     @FXML
-    private Label Respuesta;
-    @FXML
     private Button twittear;
     @FXML
     private Button Follow;
     @FXML
     private Button Repli;
     @FXML
-    private TextArea cambioRespuesta;
-    @FXML
-    private Button confirmar;
-    @FXML
     private Button enviar;
     @FXML
     private TextArea tweet;
     
     Mensajes textos = new Mensajes();
-    @FXML
-    private Button change;
     @FXML
     private Button botonCambiarRespuestas;
     @FXML
@@ -134,22 +126,6 @@ public class InicioController implements Initializable,CambiaEscenas {
     private Label limMens;
     
     private int MAX = 0;
-    @FXML
-    private Button retweet;
-    @FXML
-    private Button like;
-    @FXML
-    private TextArea idReTweet;
-    @FXML
-    private TextArea idLike;
-    @FXML
-    private Button volverLike;
-    @FXML
-    private Button volverRetweet;
-    @FXML
-    private Button Likear;
-    @FXML
-    private Button Retwetear;
     
     private List<Status> statuses;
     @FXML
@@ -171,17 +147,11 @@ public class InicioController implements Initializable,CambiaEscenas {
         seguirCuenta.setWrapText(true);
         mensajePrivado.setWrapText(true);
         cambios.setWrapText(true);
-        cambioRespuesta.setWrapText(true);
         //botones y labels que no usare
-        Respuesta.setVisible(false);
-        change.setVisible(false);
-        cambioRespuesta.setVisible(false);
-        confirmar.setVisible(false);
         maximo.setVisible(false);
         maxMensaje.setVisible(false);
         limMens.setVisible(false);
         lim.setVisible(false);
-        Respuesta.setText(textos.getMensajePredeterminado());
         //todo el plano que tiene las opciones para cambiar respuestas
         planoRespuestas.setVisible(false);
         mensaje1.setVisible(false);
@@ -202,21 +172,7 @@ public class InicioController implements Initializable,CambiaEscenas {
         seguir.setVisible(false);
         seguirCuenta.setVisible(false);
         cuenta.setVisible(false);
-        Retwetear.setVisible(false);
-        Likear.setVisible(false);
-        volverRetweet.setVisible(false);
-        volverLike.setVisible(false);
-        idReTweet.setVisible(false);
-        idLike.setVisible(false);
         enviarArchivo.setVisible(false);
-    }    
-
-    @FXML
-    private void handleChangeText(ActionEvent event) {
-        cambioRespuesta.setVisible(true);
-        confirmar.setVisible(true);
-        Respuesta.setVisible(false);
-        
     }
 
     @FXML
@@ -262,22 +218,22 @@ public class InicioController implements Initializable,CambiaEscenas {
             timeline.setPrefSize(statuses.size()*50, statuses.size()*300);
             timeline.setMinSize(statuses.size()*50, statuses.size()*300);
             timeline.setMaxSize(statuses.size()*50, statuses.size()*300);
-            ColumnConstraints column = new ColumnConstraints(300);
+            ColumnConstraints column = new ColumnConstraints(450);
             timeline.getColumnConstraints().add(column);
             for (int i = 0; i < statuses.size(); i++) {
-                RowConstraints row = new RowConstraints(250);
+                RowConstraints row = new RowConstraints(380);
                 timeline.getRowConstraints().add(row);
             }
             for (int j = 0; j < statuses.size(); j++) {
                 textos = new Mensajes();
                 GridPane tweet = new GridPane();
-                tweet.setPrefSize(320, 250);
-                tweet.setMinSize(320, 250);
-                tweet.setMaxSize(320, 250);
-                ColumnConstraints column2 = new ColumnConstraints(300);
+                tweet.setPrefSize(460, 380);
+                tweet.setMinSize(460, 380);
+                tweet.setMaxSize(460, 380);
+                ColumnConstraints column2 = new ColumnConstraints(450);
                 tweet.getColumnConstraints().add(column2);
                 RowConstraints row1 = new RowConstraints(50);
-                RowConstraints row2 = new RowConstraints(150);
+                RowConstraints row2 = new RowConstraints(280);
                 RowConstraints row3 = new RowConstraints(50);
                 tweet.getRowConstraints().add(row1);
                 tweet.getRowConstraints().add(row2);
@@ -399,13 +355,8 @@ public class InicioController implements Initializable,CambiaEscenas {
                 } catch (TwitterException ex) {
                     if (ex.getErrorMessage().equals("You have already retweeted this Tweet.")) {
                         try {
-                            List<Status> retweets = bot.retweetList(statuses.get(j).getId());
-                            for (Status retweet : retweets){
-                                if (retweet.getRetweetedStatus().getId() == statuses.get(j).getId()){
-                                    bot.eliminarTweet(retweet.getId());
-                                }
-                            }
-                        retweet.setStyle("-fx-background-color:"); 
+                            bot.unRetweet(statuses.get(j).getId());
+                            retweet.setStyle("-fx-background-color:"); 
                         } catch (TwitterException ex1) { try { mostrarError(ex1.getErrorMessage()); } catch (IOException ex2) { } }
                     }else{ try { mostrarError(ex.getErrorMessage()); } catch (IOException ex1) { } }
                 }
@@ -448,13 +399,8 @@ public class InicioController implements Initializable,CambiaEscenas {
         seguirCuenta.clear();
         mensajePrivado.clear();
         cambios.clear();
-        cambioRespuesta.clear();
-        idLike.clear();
-        idReTweet.clear();
         maximo.setText("0");
         maxMensaje.setText("0");
-        mostrarLike(false);
-        mostrarRetweet(false);
         mostrarTweetear(false);
         mostrarSeguir(false);
         mostrarMensajesPrivados(false);
@@ -541,8 +487,6 @@ public class InicioController implements Initializable,CambiaEscenas {
         Repli.setVisible(valor);
         enviarMensajePrivado.setVisible(valor);
         botonCambiarRespuestas.setVisible(valor);
-        like.setVisible(valor);
-        retweet.setVisible(valor);
     }
 
     @Override
@@ -586,20 +530,6 @@ public class InicioController implements Initializable,CambiaEscenas {
         cambiarMensajeAutomatico.setVisible(valor);
     }
 
-    @Override
-    public void mostrarLike(boolean valor) {
-        idLike.setVisible(valor);
-        Likear.setVisible(valor);
-        volverLike.setVisible(valor);
-    }
-
-    @Override
-    public void mostrarRetweet(boolean valor) {
-        idReTweet.setVisible(valor);
-        Retwetear.setVisible(valor);
-        volverRetweet.setVisible(valor);
-    }
-
     private void mostrarError(String error) throws IOException{
         FXMLLoader loader = new FXMLLoader();
         URL location = AyudaController.class.getResource("Ayuda.fxml");
@@ -612,65 +542,6 @@ public class InicioController implements Initializable,CambiaEscenas {
         controller.setMensaje(error);
         System.out.println(error);
         stage.show();
-    }
-    @FXML
-    private void confirm(ActionEvent event) {
-    }
-
-    @FXML
-    private void handleRetweet(ActionEvent event) {
-        mostrarInicio(false);
-        mostrarRetweet(true);
-    }
-
-    @FXML
-    private void handelLike(ActionEvent event) {
-        mostrarInicio(false);
-        mostrarLike(true);
-    }
-
-    @FXML
-    private void like(ActionEvent event) throws IOException {
-        try{
-            mostrarInicio(true);
-            mostrarLike(false);
-            textos.setLike(idLike.getText());
-            idLike.clear();
-            if (!"".equals(textos.getLike())) {
-                if (textos.getLike().matches("[0-9]+")) {
-                    TwitterBot bot = new TwitterBot();
-                    bot.likeTweet(Long.parseLong(textos.getLike()));
-                }else{
-                    mostrarError("Ingrese una id valida.");
-                }
-            }else{
-                mostrarError("Ingrese una id.");
-            }
-        }catch(TwitterException ex){
-            mostrarError(ex.getErrorMessage());
-        }
-    }
-
-    @FXML
-    private void retweet(ActionEvent event) throws IOException {
-        try{
-            mostrarInicio(true);
-            mostrarRetweet(false);
-            textos.setRetweet(idReTweet.getText());
-            idReTweet.clear();
-            if (!"".equals(textos.getRetweet())) {
-                if (textos.getRetweet().matches("[0-9]+")) {
-                    TwitterBot bot = new TwitterBot();
-                    bot.retweet(Long.parseLong(textos.getRetweet()));
-                }else{
-                    mostrarError("Ingrese una id valida.");
-                }
-            }else{
-                mostrarError("Ingrese una id.");
-            }
-        }catch(TwitterException ex){
-            mostrarError(ex.getErrorMessage());
-        }
     }
     
     @FXML
