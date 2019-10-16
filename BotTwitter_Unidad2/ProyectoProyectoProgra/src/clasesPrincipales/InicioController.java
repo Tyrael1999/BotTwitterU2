@@ -61,25 +61,17 @@ public class InicioController implements Initializable,CambiaEscenas {
     @FXML
     private ImageView perfil;
     @FXML
-    private Label Respuesta;
-    @FXML
     private Button twittear;
     @FXML
     private Button Follow;
     @FXML
     private Button Repli;
     @FXML
-    private TextArea cambioRespuesta;
-    @FXML
-    private Button confirmar;
-    @FXML
     private Button enviar;
     @FXML
     private TextArea tweet;
     
     Mensajes textos = new Mensajes();
-    @FXML
-    private Button change;
     @FXML
     private Button botonCambiarRespuestas;
     @FXML
@@ -134,32 +126,17 @@ public class InicioController implements Initializable,CambiaEscenas {
     private Label limMens;
     
     private int MAX = 0;
-    @FXML
-    private Button retweet;
-    @FXML
-    private Button like;
-    @FXML
-    private TextArea idReTweet;
-    @FXML
-    private TextArea idLike;
-    @FXML
-    private Button volverLike;
-    @FXML
-    private Button volverRetweet;
-    @FXML
-    private Button Likear;
-    @FXML
-    private Button Retwetear;
     
     private List<Status> statuses;
     @FXML
     private Button enviarArchivo;
-    
+    private GridPane timeline = new GridPane();
     private File selectedFile;
+    private int flag = 0;
+    private int tweets = 9;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            // TODO
             mostrarTimeline();
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
@@ -171,17 +148,11 @@ public class InicioController implements Initializable,CambiaEscenas {
         seguirCuenta.setWrapText(true);
         mensajePrivado.setWrapText(true);
         cambios.setWrapText(true);
-        cambioRespuesta.setWrapText(true);
         //botones y labels que no usare
-        Respuesta.setVisible(false);
-        change.setVisible(false);
-        cambioRespuesta.setVisible(false);
-        confirmar.setVisible(false);
         maximo.setVisible(false);
         maxMensaje.setVisible(false);
         limMens.setVisible(false);
         lim.setVisible(false);
-        Respuesta.setText(textos.getMensajePredeterminado());
         //todo el plano que tiene las opciones para cambiar respuestas
         planoRespuestas.setVisible(false);
         mensaje1.setVisible(false);
@@ -202,21 +173,7 @@ public class InicioController implements Initializable,CambiaEscenas {
         seguir.setVisible(false);
         seguirCuenta.setVisible(false);
         cuenta.setVisible(false);
-        Retwetear.setVisible(false);
-        Likear.setVisible(false);
-        volverRetweet.setVisible(false);
-        volverLike.setVisible(false);
-        idReTweet.setVisible(false);
-        idLike.setVisible(false);
         enviarArchivo.setVisible(false);
-    }    
-
-    @FXML
-    private void handleChangeText(ActionEvent event) {
-        cambioRespuesta.setVisible(true);
-        confirmar.setVisible(true);
-        Respuesta.setVisible(false);
-        
     }
 
     @FXML
@@ -232,6 +189,71 @@ public class InicioController implements Initializable,CambiaEscenas {
         mostrarSeguir(true);
     }
 
+    private GridPane crearTweet(int j, List<Status> statuses) throws TwitterException, IOException{
+        GridPane tweet = new GridPane();
+        tweet.setPrefSize(460, 380);
+        tweet.setMinSize(460, 380);
+        tweet.setMaxSize(460, 380);
+        ColumnConstraints column2 = new ColumnConstraints(450);
+        tweet.getColumnConstraints().add(column2);
+        RowConstraints row1 = new RowConstraints(50);
+        RowConstraints row2 = new RowConstraints(280);
+        RowConstraints row3 = new RowConstraints(50);
+        tweet.getRowConstraints().add(row1);
+        tweet.getRowConstraints().add(row2);
+        tweet.getRowConstraints().add(row3);
+        HBox casilla1 = new HBox();
+        HBox casilla3 = new HBox();
+        HBox casilla2 = new HBox();
+        TextArea texto = new TextArea();
+        ImageView foto = ImageViewBuilder.create().image(new Image(statuses.get(j).getUser().get400x400ProfileImageURL())).build();
+        foto.setFitHeight(50);
+        foto.setFitWidth(50);
+        Label id = new Label();
+        id.setText(statuses.get(j).getUser().getName()+"\n  @"+statuses.get(j).getUser().getScreenName());
+        texto.setText(statuses.get(j).getText());
+        texto.setEditable(false);
+        texto.setWrapText(true);
+        Button like = handleNewLike(j, statuses);
+        Button retweet = handleNewRetweet(j, statuses);
+        texto.setPrefSize(600, 600);
+        ImageView corazon = ImageViewBuilder.create().image(new Image("https://icons-for-free.com/iconfiles/png/512/favorite+heart+love+valentines+day+icon-1320184635695804513.png")).build();
+        corazon.setFitHeight(20);
+        corazon.setFitWidth(20);
+        like.setGraphic(corazon);
+        like.setPrefSize(20, 20);
+        ImageView flechas = ImageViewBuilder.create().image(new Image("http://simpleicon.com/wp-content/uploads/retweet.png")).build();
+        flechas.setFitHeight(20);
+        flechas.setFitWidth(20);
+        retweet.setGraphic(flechas);
+        retweet.setPrefSize(20, 20);
+        casilla1.setSpacing(10);
+        casilla2.setSpacing(10);
+        casilla2.setPadding(new Insets(10));
+        if (statuses.get(j).getUser().getScreenName().equals("javinMoraga")) {
+            Button eliminar = handleEliminar(j, statuses);
+            eliminar.setText("X");
+            casilla2.getChildren().addAll(like,retweet, eliminar);
+        }else{
+            casilla2.getChildren().addAll(like,retweet);
+        }
+        casilla1.getChildren().addAll(foto,id);
+        casilla3.setFillHeight(true);
+        casilla3.setAlignment(Pos.BOTTOM_CENTER);
+        if (statuses.get(j).getMediaEntities().length!=0) {
+            ImageView contentImg = ImageViewBuilder.create().image(new Image(statuses.get(j).getMediaEntities()[0].getMediaURL())).build();
+            contentImg.setFitHeight(500);
+            contentImg.setFitWidth(500);
+            casilla3.getChildren().addAll(texto,contentImg);
+        }else{
+            casilla3.getChildren().addAll(texto);
+        }
+        tweet.add(casilla1, 0, 0);
+        tweet.add(casilla3, 0, 1);
+        tweet.add(casilla2, 0, 2);
+        tweet.setStyle("-fx-border-color:black");
+        return tweet;
+    }
     @FXML
     private void enviar(ActionEvent event) throws IOException {
         try {
@@ -240,13 +262,38 @@ public class InicioController implements Initializable,CambiaEscenas {
             mostrarTweetear(false);
             tweet.clear();
             TwitterBot bot = new TwitterBot();
-            if(selectedFile.isFile()){
+            if(flag == 1){
                 bot.tweetear(textos.getMensajeTweet(), selectedFile);
             }else{
                 bot.tweetear(textos.getMensajeTweet());
             }
+//            GridPane aux = new GridPane();
+//            aux.setPrefSize(statuses.size()*50, statuses.size()*300);
+//            aux.setMinSize(statuses.size()*50, statuses.size()*300);
+//            aux.setMaxSize(statuses.size()*50, statuses.size()*300);
+////            ColumnConstraints column = new ColumnConstraints(450);
+//            aux.getColumnConstraints().add(timeline.getColumnConstraints().get(0));
+            statuses = bot.obtenerTimeline();
+            GridPane tweet = crearTweet(0, statuses);
+//            RowConstraints row = new RowConstraints(380);
+//            aux.getRowConstraints().add(0,row);
+//            aux.add(tweet, 0, 0);
+//            for (int i = 0; i < tweets; i++) {
+////                RowConstraints row = new RowConstraints(380);
+//                aux.getRowConstraints().add(timeline.getRowConstraints().get(i));
+//            }
             maximo.setText("0");
-            mostrarTimeline();
+//            int j = 1;
+//            for (int i = 0; i <= tweets; i++) {
+//                GridPane oldTweet = ((GridPane)timeline.getChildren().get(i));
+//                aux.add(oldTweet, 0, j);
+//                j++;
+//            }
+//            tweets++;
+            timeline.add(tweet, 0, tweets);
+            tweets++;
+            flag = 0;
+            actividadReciente.setContent(timeline);
         } catch (TwitterException ex) {
             mostrarError(ex.getErrorMessage());
             maximo.setText("0");
@@ -258,83 +305,20 @@ public class InicioController implements Initializable,CambiaEscenas {
         try {
             TwitterBot bot = new TwitterBot();
             statuses = bot.obtenerTimeline();
-            GridPane timeline = new GridPane();
             timeline.setPrefSize(statuses.size()*50, statuses.size()*300);
             timeline.setMinSize(statuses.size()*50, statuses.size()*300);
             timeline.setMaxSize(statuses.size()*50, statuses.size()*300);
-            ColumnConstraints column = new ColumnConstraints(300);
+            ColumnConstraints column = new ColumnConstraints(450);
             timeline.getColumnConstraints().add(column);
-            for (int i = 0; i < statuses.size(); i++) {
-                RowConstraints row = new RowConstraints(250);
+            for (int i = 0; i < 10; i++) {
+                RowConstraints row = new RowConstraints(380);
                 timeline.getRowConstraints().add(row);
             }
-            for (int j = 0; j < statuses.size(); j++) {
-                textos = new Mensajes();
-                GridPane tweet = new GridPane();
-                tweet.setPrefSize(320, 250);
-                tweet.setMinSize(320, 250);
-                tweet.setMaxSize(320, 250);
-                ColumnConstraints column2 = new ColumnConstraints(300);
-                tweet.getColumnConstraints().add(column2);
-                RowConstraints row1 = new RowConstraints(50);
-                RowConstraints row2 = new RowConstraints(150);
-                RowConstraints row3 = new RowConstraints(50);
-                tweet.getRowConstraints().add(row1);
-                tweet.getRowConstraints().add(row2);
-                tweet.getRowConstraints().add(row3);
-                HBox casilla1 = new HBox();
-                VBox casilla3 = new VBox();
-                HBox casilla2 = new HBox();
-                TextArea texto = new TextArea();
-                ImageView foto = ImageViewBuilder.create().image(new Image(statuses.get(j).getUser().get400x400ProfileImageURL())).build();
-                foto.setFitHeight(50);
-                foto.setFitWidth(50);
-                Label id = new Label();
-                id.setText(statuses.get(j).getUser().getName()+"\n  @"+statuses.get(j).getUser().getScreenName());
-                texto.setText(statuses.get(j).getText());
-                texto.setEditable(false);
-                texto.setWrapText(true);
-                textos.setId(statuses.get(j).getId());
-                Button like = handleNewLike(j, statuses);
-                Button retweet = handleNewRetweet(j, statuses);
-                texto.setPrefSize(600, 600);
-                ImageView corazon = ImageViewBuilder.create().image(new Image("https://icons-for-free.com/iconfiles/png/512/favorite+heart+love+valentines+day+icon-1320184635695804513.png")).build();
-                corazon.setFitHeight(20);
-                corazon.setFitWidth(20);
-                like.setGraphic(corazon);
-                like.setPrefSize(20, 20);
-                ImageView flechas = ImageViewBuilder.create().image(new Image("http://simpleicon.com/wp-content/uploads/retweet.png")).build();
-                flechas.setFitHeight(20);
-                flechas.setFitWidth(20);
-                retweet.setGraphic(flechas);
-                retweet.setPrefSize(20, 20);
-                casilla1.setSpacing(10);
-                casilla2.setSpacing(10);
-                casilla2.setPadding(new Insets(10));
-                if (statuses.get(j).getUser().getScreenName().equals("javinMoraga")) {
-                    Button eliminar = handleEliminar(j, statuses);
-                    eliminar.setText("X");
-                    casilla1.getChildren().addAll(foto,id, eliminar);
-                }else{
-                    casilla1.getChildren().addAll(foto,id);
-                }
-                casilla2.getChildren().addAll(like,retweet);
-                casilla3.setFillWidth(true);
-                casilla3.setAlignment(Pos.BOTTOM_CENTER);
-                if (statuses.get(j).getMediaEntities().length!=0) {
-                    ImageView contentImg = ImageViewBuilder.create().image(new Image(statuses.get(j).getMediaEntities()[0].getMediaURL())).build();
-                    contentImg.setFitHeight(100);
-                    contentImg.setFitWidth(100);
-                    casilla3.getChildren().addAll(texto,contentImg);
-                }else{
-                    casilla3.getChildren().addAll(texto);
-                }
-                tweet.add(casilla1, 0, 0);
-                tweet.add(casilla3, 0, 1);
-                tweet.add(casilla2, 0, 2);
-                tweet.setStyle("-fx-border-color:black");
+            for (int j = 0; j < 10; j++) {
+                GridPane tweet = crearTweet(j, statuses);
                 timeline.add(tweet, 0, j);
             }
+            tweets = 10;
             actividadReciente.setContent(timeline);
             actividadReciente.fitToWidthProperty().set(true);
             actividadReciente.fitToHeightProperty().set(true);
@@ -352,12 +336,13 @@ public class InicioController implements Initializable,CambiaEscenas {
             public void handle(MouseEvent event) {
                 try {
                     bot.eliminarTweet(statuses.get(j).getId());
-                    mostrarTimeline();
+                    timeline.getChildren().remove(j);
+                    actividadReciente.setContent(timeline);
                 } catch (TwitterException ex) {
                     try {
                         mostrarError(ex.getErrorMessage());
                     } catch (IOException ex1) { }
-                } catch (IOException ex) { }
+                }
             }
         });
         return eliminar;
@@ -399,13 +384,8 @@ public class InicioController implements Initializable,CambiaEscenas {
                 } catch (TwitterException ex) {
                     if (ex.getErrorMessage().equals("You have already retweeted this Tweet.")) {
                         try {
-                            List<Status> retweets = bot.retweetList(statuses.get(j).getId());
-                            for (Status retweet : retweets){
-                                if (retweet.getRetweetedStatus().getId() == statuses.get(j).getId()){
-                                    bot.eliminarTweet(retweet.getId());
-                                }
-                            }
-                        retweet.setStyle("-fx-background-color:"); 
+                            bot.unRetweet(statuses.get(j).getId());
+                            retweet.setStyle("-fx-background-color:"); 
                         } catch (TwitterException ex1) { try { mostrarError(ex1.getErrorMessage()); } catch (IOException ex2) { } }
                     }else{ try { mostrarError(ex.getErrorMessage()); } catch (IOException ex1) { } }
                 }
@@ -448,13 +428,8 @@ public class InicioController implements Initializable,CambiaEscenas {
         seguirCuenta.clear();
         mensajePrivado.clear();
         cambios.clear();
-        cambioRespuesta.clear();
-        idLike.clear();
-        idReTweet.clear();
         maximo.setText("0");
         maxMensaje.setText("0");
-        mostrarLike(false);
-        mostrarRetweet(false);
         mostrarTweetear(false);
         mostrarSeguir(false);
         mostrarMensajesPrivados(false);
@@ -541,8 +516,6 @@ public class InicioController implements Initializable,CambiaEscenas {
         Repli.setVisible(valor);
         enviarMensajePrivado.setVisible(valor);
         botonCambiarRespuestas.setVisible(valor);
-        like.setVisible(valor);
-        retweet.setVisible(valor);
     }
 
     @Override
@@ -586,20 +559,6 @@ public class InicioController implements Initializable,CambiaEscenas {
         cambiarMensajeAutomatico.setVisible(valor);
     }
 
-    @Override
-    public void mostrarLike(boolean valor) {
-        idLike.setVisible(valor);
-        Likear.setVisible(valor);
-        volverLike.setVisible(valor);
-    }
-
-    @Override
-    public void mostrarRetweet(boolean valor) {
-        idReTweet.setVisible(valor);
-        Retwetear.setVisible(valor);
-        volverRetweet.setVisible(valor);
-    }
-
     private void mostrarError(String error) throws IOException{
         FXMLLoader loader = new FXMLLoader();
         URL location = AyudaController.class.getResource("Ayuda.fxml");
@@ -613,71 +572,18 @@ public class InicioController implements Initializable,CambiaEscenas {
         System.out.println(error);
         stage.show();
     }
-    @FXML
-    private void confirm(ActionEvent event) {
-    }
-
-    @FXML
-    private void handleRetweet(ActionEvent event) {
-        mostrarInicio(false);
-        mostrarRetweet(true);
-    }
-
-    @FXML
-    private void handelLike(ActionEvent event) {
-        mostrarInicio(false);
-        mostrarLike(true);
-    }
-
-    @FXML
-    private void like(ActionEvent event) throws IOException {
-        try{
-            mostrarInicio(true);
-            mostrarLike(false);
-            textos.setLike(idLike.getText());
-            idLike.clear();
-            if (!"".equals(textos.getLike())) {
-                if (textos.getLike().matches("[0-9]+")) {
-                    TwitterBot bot = new TwitterBot();
-                    bot.likeTweet(Long.parseLong(textos.getLike()));
-                }else{
-                    mostrarError("Ingrese una id valida.");
-                }
-            }else{
-                mostrarError("Ingrese una id.");
-            }
-        }catch(TwitterException ex){
-            mostrarError(ex.getErrorMessage());
-        }
-    }
-
-    @FXML
-    private void retweet(ActionEvent event) throws IOException {
-        try{
-            mostrarInicio(true);
-            mostrarRetweet(false);
-            textos.setRetweet(idReTweet.getText());
-            idReTweet.clear();
-            if (!"".equals(textos.getRetweet())) {
-                if (textos.getRetweet().matches("[0-9]+")) {
-                    TwitterBot bot = new TwitterBot();
-                    bot.retweet(Long.parseLong(textos.getRetweet()));
-                }else{
-                    mostrarError("Ingrese una id valida.");
-                }
-            }else{
-                mostrarError("Ingrese una id.");
-            }
-        }catch(TwitterException ex){
-            mostrarError(ex.getErrorMessage());
-        }
-    }
     
     @FXML
     private void subirArchivo(ActionEvent event) {  
-            System.out.println("subir archivo..");
-            FileChooser fc = new FileChooser();
-            String ruta;
-            selectedFile = fc.showOpenDialog(null);
+        System.out.println("subir archivo..");
+        FileChooser fc = new FileChooser();
+        String ruta;
+        selectedFile = fc.showOpenDialog(null);
+        flag = 1;
     }   
+    @FXML
+    private void responderTweets(ActionEvent event) throws TwitterException, IOException {
+        TwitterBot bot= new TwitterBot();
+        bot.responderTweet();
+    }
 }
