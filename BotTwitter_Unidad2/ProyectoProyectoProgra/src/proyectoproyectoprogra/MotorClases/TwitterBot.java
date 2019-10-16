@@ -100,5 +100,8 @@ public class TwitterBot {
     public void unRetweet(long id) throws TwitterException{
         twitter.unRetweetStatus(id);
     }
+    public long getOwnId()throws TwitterException{
+        return twitter.getId();
+    }
 }
 
