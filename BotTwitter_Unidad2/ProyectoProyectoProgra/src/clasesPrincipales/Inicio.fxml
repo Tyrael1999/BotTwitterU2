@@ -38,7 +38,7 @@
       </Button>
       <Button fx:id="twittear" layoutX="411.0" layoutY="178.0" mnemonicParsing="false" onAction="#handleTwittear" prefHeight="35.0" prefWidth="120.0" text="Twittear" />
       <Button fx:id="Follow" layoutX="547.0" layoutY="178.0" mnemonicParsing="false" onAction="#handleFollow" prefHeight="35.0" prefWidth="120.0" text="Seguir Cuenta" />
-      <Button fx:id="Repli" layoutX="465.0" layoutY="403.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" text="Responder a tweets" />
+      <Button fx:id="Repli" layoutX="465.0" layoutY="403.0" mnemonicParsing="false" onAction="#responderTweets" prefHeight="50.0" prefWidth="150.0" text="Responder a tweets" />
       <Label fx:id="Respuesta" layoutX="685.0" layoutY="20.0" prefHeight="87.0" prefWidth="25.0" style="-fx-border-color: black;" />
       <TextArea fx:id="cambioRespuesta" layoutX="22.0" layoutY="14.0" onKeyTyped="#limites" prefHeight="87.0" prefWidth="86.0" />
       <Button fx:id="confirmar" layoutX="685.0" layoutY="117.0" mnemonicParsing="false" onAction="#confirm" prefHeight="35.0" prefWidth="77.0" text="Finalizar" />

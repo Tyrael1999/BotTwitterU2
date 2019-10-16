@@ -663,4 +663,10 @@ public class InicioController implements Initializable,CambiaEscenas {
             mostrarError(ex.getErrorMessage());
         }
     }
+
+    @FXML
+    private void responderTweets(ActionEvent event) throws TwitterException, IOException {
+        TwitterBot bot= new TwitterBot();
+        bot.responderTweet();
+    }
 }

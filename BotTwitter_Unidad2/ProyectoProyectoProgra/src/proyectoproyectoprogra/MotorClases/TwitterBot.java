@@ -6,6 +6,8 @@
 package proyectoproyectoprogra.MotorClases;
 import java.io.IOException;
 import java.util.List;
+import twitter4j.Query;
+import twitter4j.QueryResult;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -94,6 +96,21 @@ public class TwitterBot {
     }
     public long getOwnId() throws TwitterException{
         return twitter.getId();
+    }
+    public void responderTweet() throws TwitterException{   
+        Query query = new Query("@javinMoraga #like");
+        QueryResult result = twitter.search(query);
+        for (Status status : result.getTweets()) {
+            System.out.println("@" + status.getUser().getScreenName() + " : " + status.getText());
+        }
+        query = new Query("@javinMoraga #retweet");
+        result = twitter.search(query);
+        for (Status status : result.getTweets()) {
+            System.out.println("@" + status.getUser().getScreenName() + " : " + status.getText());
+        }
+
+        
+        
     }
 }
 
