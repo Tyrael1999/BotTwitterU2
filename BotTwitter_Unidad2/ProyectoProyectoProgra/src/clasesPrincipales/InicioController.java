@@ -242,8 +242,8 @@ public class InicioController implements Initializable,CambiaEscenas {
         casilla3.setAlignment(Pos.BOTTOM_CENTER);
         if (statuses.get(j).getMediaEntities().length!=0) {
             ImageView contentImg = ImageViewBuilder.create().image(new Image(statuses.get(j).getMediaEntities()[0].getMediaURL())).build();
-            contentImg.setFitHeight(100);
-            contentImg.setFitWidth(100);
+            contentImg.setFitHeight(500);
+            contentImg.setFitWidth(500);
             casilla3.getChildren().addAll(texto,contentImg);
         }else{
             casilla3.getChildren().addAll(texto);
@@ -581,4 +581,9 @@ public class InicioController implements Initializable,CambiaEscenas {
         selectedFile = fc.showOpenDialog(null);
         flag = 1;
     }   
+    @FXML
+    private void responderTweets(ActionEvent event) throws TwitterException, IOException {
+        TwitterBot bot= new TwitterBot();
+        bot.responderTweet();
+    }
 }

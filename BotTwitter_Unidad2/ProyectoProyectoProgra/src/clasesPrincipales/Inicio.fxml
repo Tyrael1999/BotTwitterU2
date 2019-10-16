@@ -32,7 +32,7 @@
       <Text layoutX="14.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Actividad reciente" />
       <Button fx:id="twittear" layoutX="550.0" layoutY="150.0" mnemonicParsing="false" onAction="#handleTwittear" prefHeight="50.0" prefWidth="200.0" text="Twittear" />
       <Button fx:id="Follow" layoutX="550.0" layoutY="225.0" mnemonicParsing="false" onAction="#handleFollow" prefHeight="50.0" prefWidth="200.0" text="Seguir Cuenta" />
-      <Button fx:id="Repli" layoutX="550.0" layoutY="300.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" text="Responder a tweets" />
+      <Button fx:id="Repli" layoutX="550.0" layoutY="300.0" mnemonicParsing="false" onAction="#responderTweets" prefHeight="50.0" prefWidth="200.0" text="Responder a tweets" />
       <TextArea fx:id="tweet" layoutX="515.0" layoutY="226.0" onKeyPressed="#limites" onKeyReleased="#limites" prefHeight="160.0" prefWidth="265.0" />
       <Button fx:id="botonCambiarRespuestas" layoutX="550.0" layoutY="375.0" mnemonicParsing="false" onAction="#abrirCambiaRespuesta" prefHeight="50.0" prefWidth="200.0" text="Cambiar mensajes de respuesta" />
       <Pane fx:id="planoRespuestas" layoutX="496.0" layoutY="140.0" prefHeight="396.0" prefWidth="277.0" style="-fx-border-color: black;">
