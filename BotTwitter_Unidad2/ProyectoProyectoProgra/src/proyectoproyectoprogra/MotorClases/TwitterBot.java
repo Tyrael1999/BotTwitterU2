@@ -4,9 +4,12 @@
  * and open the template in the editor.
  */
 package proyectoproyectoprogra.MotorClases;
+import clasesPrincipales.InicioController;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.GridPane;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Status;
@@ -105,25 +108,49 @@ public class TwitterBot {
     public long getOwnId()throws TwitterException{
         return twitter.getId();
     }
-    public void responderTweet() throws IOException{   
+    public void responderTweet(GridPane timeline, ScrollPane actividadReciente, int tweets) throws IOException{   
         Query query;
         QueryResult result;
+        List<Status> statuses;
+        InicioController aux = new InicioController();
+        try{
+            query = new Query("@javinMoraga");
+            result = twitter.search(query);
+            for(Status status : result.getTweets()){
+                Query gustar = new Query("#gustar");
+                QueryResult resultGustar = result;
+                for(Status statuse : resultGustar.getTweets()){
+                    
+                }
+            }
+        }catch (TwitterException ex) {}
         try {
-            query = new Query("@javinMoraga #like");
+            query = new Query("@javinMoraga #gustar");
             result = twitter.search(query);
             for (Status status : result.getTweets()) {
                 twitter.createFavorite(status.getId());
+                statuses = obtenerTimeline();
+                GridPane tweet = aux.crearTweet(0, statuses);
+                aux.insertRows(1, timeline);
+                timeline.add(tweet, 0, 0);
+                tweets++;
+                actividadReciente.setContent(timeline);
                 System.out.println("@" + status.getUser().getScreenName() + " : " + status.getText());
             }
         } catch (TwitterException ex) {}
         try {
-            query = new Query("@javinMoraga #retweet");
+            query = new Query("@javinMoraga #difundir");
             result = twitter.search(query);
             for (Status status : result.getTweets()) {
                 twitter.retweetStatus(status.getId());
+                statuses = obtenerTimeline();
+                GridPane tweet = aux.crearTweet(0, statuses);
+                aux.insertRows(1, timeline);
+                timeline.add(tweet, 0, 0);
+                tweets++;
+                actividadReciente.setContent(timeline);
                 System.out.println("@" + status.getUser().getScreenName() + " : " + status.getText());
             }
         } catch (TwitterException ex) {}
     }
 }
-

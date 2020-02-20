@@ -18,13 +18,16 @@ import clasesAyuda.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
@@ -189,7 +192,7 @@ public class InicioController implements Initializable,CambiaEscenas {
         mostrarSeguir(true);
     }
 
-    private GridPane crearTweet(int j, List<Status> statuses) throws TwitterException, IOException{
+    public GridPane crearTweet(int j, List<Status> statuses) throws TwitterException, IOException{
         GridPane tweet = new GridPane();
         tweet.setPrefSize(460, 380);
         tweet.setMinSize(460, 380);
@@ -242,8 +245,8 @@ public class InicioController implements Initializable,CambiaEscenas {
         casilla3.setAlignment(Pos.BOTTOM_CENTER);
         if (statuses.get(j).getMediaEntities().length!=0) {
             ImageView contentImg = ImageViewBuilder.create().image(new Image(statuses.get(j).getMediaEntities()[0].getMediaURL())).build();
-            contentImg.setFitHeight(500);
-            contentImg.setFitWidth(500);
+            contentImg.setFitHeight(200);
+            contentImg.setFitWidth(200);
             casilla3.getChildren().addAll(texto,contentImg);
         }else{
             casilla3.getChildren().addAll(texto);
@@ -251,7 +254,8 @@ public class InicioController implements Initializable,CambiaEscenas {
         tweet.add(casilla1, 0, 0);
         tweet.add(casilla3, 0, 1);
         tweet.add(casilla2, 0, 2);
-        tweet.setStyle("-fx-border-color:black");
+        tweet.setPadding(new Insets(5));
+        tweet.setStyle("-fx-border-radius: 18 18 18 18;-fx-border-color:black");
         return tweet;
     }
     @FXML
@@ -267,40 +271,39 @@ public class InicioController implements Initializable,CambiaEscenas {
             }else{
                 bot.tweetear(textos.getMensajeTweet());
             }
-//            GridPane aux = new GridPane();
-//            aux.setPrefSize(statuses.size()*50, statuses.size()*300);
-//            aux.setMinSize(statuses.size()*50, statuses.size()*300);
-//            aux.setMaxSize(statuses.size()*50, statuses.size()*300);
-////            ColumnConstraints column = new ColumnConstraints(450);
-//            aux.getColumnConstraints().add(timeline.getColumnConstraints().get(0));
             statuses = bot.obtenerTimeline();
             GridPane tweet = crearTweet(0, statuses);
-//            RowConstraints row = new RowConstraints(380);
-//            aux.getRowConstraints().add(0,row);
-//            aux.add(tweet, 0, 0);
-//            for (int i = 0; i < tweets; i++) {
-////                RowConstraints row = new RowConstraints(380);
-//                aux.getRowConstraints().add(timeline.getRowConstraints().get(i));
-//            }
+            insertRows(1, timeline);
             maximo.setText("0");
-//            int j = 1;
-//            for (int i = 0; i <= tweets; i++) {
-//                GridPane oldTweet = ((GridPane)timeline.getChildren().get(i));
-//                aux.add(oldTweet, 0, j);
-//                j++;
-//            }
-//            tweets++;
-            timeline.add(tweet, 0, tweets);
+            timeline.add(tweet, 0, 0);
             tweets++;
             flag = 0;
             actividadReciente.setContent(timeline);
         } catch (TwitterException ex) {
             mostrarError(ex.getErrorMessage());
             maximo.setText("0");
-        }
-        
+        }   
     }
     
+    public void insertRows(int count, GridPane timeline) {
+        for (Node child : timeline.getChildren()) {
+            Integer rowIndex = GridPane.getRowIndex(child);
+            GridPane.setRowIndex(child, rowIndex == null ? count : count + rowIndex);
+        }
+    }
+    private void deleteRow(GridPane grid, final int row) {
+        Set<Node> deleteNodes = new HashSet<>();
+        for (Node child : grid.getChildren()) {
+            Integer rowIndex = GridPane.getRowIndex(child);
+            int r = rowIndex == null ? 0 : rowIndex;
+            if (r > row) {
+                GridPane.setRowIndex(child, r-1);
+            } else if (r == row) {
+                deleteNodes.add(child);
+            }
+        }
+        grid.getChildren().removeAll(deleteNodes);
+    }
     private void mostrarTimeline() throws IOException{
         try {
             TwitterBot bot = new TwitterBot();
@@ -316,6 +319,7 @@ public class InicioController implements Initializable,CambiaEscenas {
             }
             for (int j = 0; j < 10; j++) {
                 GridPane tweet = crearTweet(j, statuses);
+                tweet.setPadding(new Insets(5));
                 timeline.add(tweet, 0, j);
             }
             tweets = 10;
@@ -336,7 +340,7 @@ public class InicioController implements Initializable,CambiaEscenas {
             public void handle(MouseEvent event) {
                 try {
                     bot.eliminarTweet(statuses.get(j).getId());
-                    timeline.getChildren().remove(j);
+                    deleteRow(timeline, j);
                     actividadReciente.setContent(timeline);
                 } catch (TwitterException ex) {
                     try {
@@ -584,6 +588,6 @@ public class InicioController implements Initializable,CambiaEscenas {
     @FXML
     private void responderTweets(ActionEvent event) throws TwitterException, IOException {
         TwitterBot bot= new TwitterBot();
-        bot.responderTweet();
+        bot.responderTweet(timeline, actividadReciente, tweets);
     }
 }
