@@ -520,6 +520,7 @@ public class InicioController implements Initializable,CambiaEscenas {
         Repli.setVisible(valor);
         enviarMensajePrivado.setVisible(valor);
         botonCambiarRespuestas.setVisible(valor);
+        //responder mensajes automatico
     }
 
     @Override
