@@ -4,14 +4,12 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" prefHeight="556.0" prefWidth="795.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clasesPrincipales.InicioController">
+<AnchorPane id="AnchorPane" fx:id="ventana" prefHeight="556.0" prefWidth="795.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clasesPrincipales.InicioController">
    <children>
       <Button fx:id="enviarArchivo" layoutX="521.0" layoutY="417.0" mnemonicParsing="false" onAction="#subirArchivo" prefHeight="35.0" prefWidth="120.0" text="Enviar Archivo" />
       <TextArea fx:id="mensajePrivado" layoutX="515.0" layoutY="288.0" onKeyPressed="#limites" onKeyReleased="#limites" prefHeight="141.0" prefWidth="265.0" promptText="Mensaje" />
@@ -19,16 +17,6 @@
       <TextArea fx:id="seguirCuenta" layoutX="523.0" layoutY="271.0" prefHeight="35.0" prefWidth="250.0" promptText="Usuario" />
       <Button fx:id="enviar" layoutX="523.0" layoutY="175.0" mnemonicParsing="false" onAction="#enviar" prefHeight="35.0" prefWidth="120.0" text="Enviar" />
       <Button fx:id="volverTweet" layoutX="658.0" layoutY="175.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="35.0" prefWidth="120.0" text="Volver" />
-      <ImageView fx:id="Fondo" fitHeight="118.0" fitWidth="277.0" layoutX="495.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="495.0" AnchorPane.rightAnchor="57.0" AnchorPane.topAnchor="14.0">
-         <image>
-            <Image url="@../imagenes/fondoV2.jpg" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="perfil" fitHeight="51.0" fitWidth="59.0" layoutX="697.0" layoutY="92.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="73.0" AnchorPane.topAnchor="92.0">
-         <image>
-            <Image url="@../imagenes/perfil.jpg" />
-         </image>
-      </ImageView>
       <Text layoutX="14.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Actividad reciente" />
       <Button fx:id="twittear" layoutX="550.0" layoutY="150.0" mnemonicParsing="false" onAction="#handleTwittear" prefHeight="50.0" prefWidth="200.0" text="Twittear" />
       <Button fx:id="Follow" layoutX="550.0" layoutY="225.0" mnemonicParsing="false" onAction="#handleFollow" prefHeight="50.0" prefWidth="200.0" text="Seguir Cuenta" />

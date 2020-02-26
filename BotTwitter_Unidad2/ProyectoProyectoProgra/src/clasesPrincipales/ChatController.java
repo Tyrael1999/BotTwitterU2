@@ -5,6 +5,8 @@
  */
 package clasesPrincipales;
 
+import com.gluonhq.charm.glisten.control.TextField;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -14,6 +16,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import proyectoproyectoprogra.MotorClases.TwitterBot;
+import twitter4j.TwitterException;
 
 /**
  * FXML Controller class
@@ -32,6 +36,10 @@ public class ChatController implements Initializable {
     private Button enviar;
     @FXML
     private Label nombreUsuario;
+    @FXML
+    private TextField buscador;
+    @FXML
+    private Button buscar;
 
     /**
      * Initializes the controller class.
@@ -45,6 +53,18 @@ public class ChatController implements Initializable {
     private void enviar(ActionEvent event) {
         String mensajeEnviado;
         mensajeEnviado = mensaje.getText();
+    }
+
+    @FXML
+    private void buscar(ActionEvent event) throws TwitterException, IOException {
+        char[] nombre = null;
+        nombre = (buscador.getText()).toCharArray();
+        if (nombre.length == 0) {
+            System.out.println("Ingrese texto");
+        }else{
+            TwitterBot bot = new TwitterBot();
+            bot.buscarUsuario(nombre);
+        }
     }
     
 }
