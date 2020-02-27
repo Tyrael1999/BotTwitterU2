@@ -7,6 +7,7 @@ package proyectoproyectoprogra.MotorClases;
 import clasesPrincipales.InicioController;
 import java.io.File;
 import java.io.IOException;
+import static java.lang.Long.parseLong;
 import java.util.List;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
@@ -151,14 +152,38 @@ public class TwitterBot {
         try{
             query = new Query("@javinMoraga");
             result = twitter.search(query);
+            char arroba = '@';
             for(Status status : result.getTweets()){
-                Query gustar = new Query("#gustar");
-                QueryResult resultGustar = result;
-                for(Status statuse : resultGustar.getTweets()){
+                System.out.println(""+status.getText());
+                String[] words= status.getText().split(" ");
+                for (int i = 0; i < words.length; i++) {
+                    System.out.println(""+words[i]);
+                    if (words[i].equals("#seguir")) {
+                        if(words[i+1].charAt(0) == arroba){
+                            seguirUsuario(words[i+1]);
+                        }else{
+                            System.out.println("seguir a "+status.getUser().getScreenName());
+                            seguirUsuario(status.getUser().getScreenName());
+                        }
+                    }else if (words[i].equals("#gustar")) {
+                        if (i+1<words.length && isNumeric(words[i+1])) {
+                            long id = parseLong(words[i+1]);
+                            likeTweet(id);
+                        }else{
+                            likeTweet(status.getId());
+                        }
+                    }else if (words[i].equals("#difundir")) {
+                        if (i+1<words.length && isNumeric(words[i+1])) {
+                            long id = parseLong(words[i+1]);
+                            retweet(id);
+                        }else{
+                            retweet(status.getId());
+                        }
+                    }
                     
                 }
             }
-        }catch (TwitterException ex) {}
+        }catch (TwitterException ex) {}/*
         try {
             query = new Query("@javinMoraga #gustar");
             result = twitter.search(query);
@@ -186,6 +211,18 @@ public class TwitterBot {
                 actividadReciente.setContent(timeline);
                 System.out.println("@" + status.getUser().getScreenName() + " : " + status.getText());
             }
-        } catch (TwitterException ex) {}
+        } catch (TwitterException ex) {}*/
+    }
+    public static boolean isNumeric(String str) {
+        if (str == null) {
+            return false;
+        }
+        int sz = str.length();
+        for (int i = 0; i < sz; i++) {
+            if (Character.isDigit(str.charAt(i)) == false) {
+                return false;
+            }
+        }
+        return true;
     }
 }
