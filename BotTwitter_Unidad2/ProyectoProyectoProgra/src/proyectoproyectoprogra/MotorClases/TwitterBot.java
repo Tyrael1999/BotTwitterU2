@@ -11,6 +11,7 @@ import static java.lang.Long.parseLong;
 import java.util.List;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
+import twitter4j.IDs;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Status;
@@ -18,6 +19,7 @@ import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
+import twitter4j.User;
 import twitter4j.conf.ConfigurationBuilder;
 /**
  * Clase que permite la interacciòn entre la interfaz y twitter.com
@@ -109,6 +111,39 @@ public class TwitterBot {
     public long getOwnId()throws TwitterException{
         return twitter.getId();
     }
+    public User getOwnUser()throws TwitterException{
+        return twitter.showUser("javinMoraga");
+    }
+    public void buscarUsuario(char[] nombre)throws TwitterException{
+        IDs ids = twitter.getFollowersIDs(-1);
+        do {
+            for (long id : ids.getIDs()) {      
+                String ID = "followers ID #" + id;
+                String[] firstname = ID.split("#");
+                String first_Name = firstname[0];
+                String Id = firstname[1];
+                String Name = twitter.showUser(id).getName();
+                String usuario = twitter.showUser(id).getScreenName();
+                char[] cadenaUsuario = usuario.toCharArray();
+                int encontrado = 0;
+                for (int i = 0; i < cadenaUsuario.length; i++) {
+                    if (nombre[0] == cadenaUsuario[i]) {
+                        int l = i;
+                        for (int j = 0; j < nombre.length; j++) {
+                            encontrado = 0;
+                            if (nombre[j] == cadenaUsuario[l]) {
+                                encontrado = 1;
+                            }
+                            l++;
+                        }
+                        if (encontrado == 1) {
+                            System.out.println("Usuario: "+usuario+"\n");
+                        }
+                    }
+                }
+            }
+        } while (ids.hasNext());
+    }
     /**
      * Metodo a trabajar
      * @param timeline
@@ -186,15 +221,15 @@ public class TwitterBot {
         } catch (TwitterException ex) {}*/
     }
     public static boolean isNumeric(String str) {
-    if (str == null) {
-        return false;
-    }
-    int sz = str.length();
-    for (int i = 0; i < sz; i++) {
-        if (Character.isDigit(str.charAt(i)) == false) {
+        if (str == null) {
             return false;
         }
-    }
-    return true;
+        int sz = str.length();
+        for (int i = 0; i < sz; i++) {
+            if (Character.isDigit(str.charAt(i)) == false) {
+                return false;
+            }
+        }
+        return true;
     }
 }
