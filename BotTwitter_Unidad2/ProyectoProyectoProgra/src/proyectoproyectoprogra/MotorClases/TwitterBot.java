@@ -129,6 +129,7 @@ public class TwitterBot {
                 System.out.println(""+status.getText());
                 String[] words= status.getText().split(" ");
                 for (int i = 0; i < words.length; i++) {
+                    System.out.println(""+words[i]);
                     if (words[i].equals("#seguir")) {
                         if(words[i+1].charAt(0) == arroba){
                             seguirUsuario(words[i+1]);
@@ -137,14 +138,14 @@ public class TwitterBot {
                             seguirUsuario(status.getUser().getScreenName());
                         }
                     }else if (words[i].equals("#gustar")) {
-                        if (isNumeric(words[i+1])) {
+                        if (i+1<words.length && isNumeric(words[i+1])) {
                             long id = parseLong(words[i+1]);
                             likeTweet(id);
                         }else{
                             likeTweet(status.getId());
                         }
                     }else if (words[i].equals("#difundir")) {
-                        if (isNumeric(words[i+1])) {
+                        if (i+1<words.length && isNumeric(words[i+1])) {
                             long id = parseLong(words[i+1]);
                             retweet(id);
                         }else{
