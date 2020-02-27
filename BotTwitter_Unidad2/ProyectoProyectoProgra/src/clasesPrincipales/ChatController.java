@@ -4,8 +4,6 @@
  * and open the template in the editor.
  */
 package clasesPrincipales;
-
-import com.gluonhq.charm.glisten.control.TextField;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -18,6 +16,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import proyectoproyectoprogra.MotorClases.TwitterBot;
 import twitter4j.TwitterException;
+import javafx.scene.control.TextField;
 
 /**
  * FXML Controller class

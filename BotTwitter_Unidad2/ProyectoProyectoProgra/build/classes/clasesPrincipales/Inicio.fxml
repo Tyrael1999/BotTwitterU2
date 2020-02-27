@@ -19,7 +19,7 @@
       <Button fx:id="volverTweet" layoutX="658.0" layoutY="175.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="35.0" prefWidth="120.0" text="Volver" />
       <Text layoutX="14.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Actividad reciente" />
       <Button fx:id="twittear" layoutX="550.0" layoutY="150.0" mnemonicParsing="false" onAction="#handleTwittear" prefHeight="50.0" prefWidth="200.0" text="Twittear" />
-      <Button fx:id="Follow" layoutX="550.0" layoutY="225.0" mnemonicParsing="false" onAction="#handleFollow" prefHeight="50.0" prefWidth="200.0" text="Seguir Cuenta" />
+      <Button fx:id="Follow" layoutX="550.0" layoutY="225.0" mnemonicParsing="false" onAction="#handleFollow" prefHeight="50.0" prefWidth="200.0" text="Buscar Usuario" />
       <Button fx:id="Repli" layoutX="550.0" layoutY="300.0" mnemonicParsing="false" onAction="#responderTweets" prefHeight="50.0" prefWidth="200.0" text="Responder a tweets" />
       <TextArea fx:id="tweet" layoutX="515.0" layoutY="226.0" onKeyPressed="#limites" onKeyReleased="#limites" prefHeight="160.0" prefWidth="265.0" />
       <Button fx:id="botonCambiarRespuestas" layoutX="550.0" layoutY="375.0" mnemonicParsing="false" onAction="#abrirCambiaRespuesta" prefHeight="50.0" prefWidth="200.0" text="Cambiar mensajes de respuesta" />
@@ -46,7 +46,7 @@
       <Button fx:id="enviarMensajePrivado" layoutX="550.0" layoutY="450.0" mnemonicParsing="false" onAction="#escribirMensajePriv" prefHeight="50.0" prefWidth="200.0" text="Enviar Mensaje Privado" />
       <Button fx:id="enviar2" layoutX="523.0" layoutY="227.0" mnemonicParsing="false" onAction="#enviarMensajePrivado" prefHeight="35.0" prefWidth="120.0" text="Enviar" />
       <Button fx:id="volverMensaje" layoutX="658.0" layoutY="227.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="35.0" prefWidth="120.0" text="Volver" />
-      <Button fx:id="seguir" layoutX="523.0" layoutY="227.0" mnemonicParsing="false" onAction="#seguir" prefHeight="35.0" prefWidth="120.0" text="Seguir" />
+      <Button fx:id="buscar" layoutX="523.0" layoutY="227.0" mnemonicParsing="false" onAction="#buscar" prefHeight="35.0" prefWidth="120.0" text="Buscar" />
       <Button fx:id="volverSeguir" layoutX="658.0" layoutY="227.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="35.0" prefWidth="120.0" text="Volver" />
       <HBox layoutX="777.0" layoutY="431.0">
          <children>

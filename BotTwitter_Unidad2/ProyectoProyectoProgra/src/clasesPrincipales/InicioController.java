@@ -114,8 +114,6 @@ public class InicioController implements Initializable,CambiaEscenas {
     @FXML
     private TextArea seguirCuenta;
     @FXML
-    private Button seguir;
-    @FXML
     private Button volverSeguir;
     @FXML
     private TextArea cuenta;
@@ -135,6 +133,8 @@ public class InicioController implements Initializable,CambiaEscenas {
     private int tweets = 9;
     @FXML
     private AnchorPane ventana;
+    @FXML
+    private Button buscar;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
@@ -171,7 +171,7 @@ public class InicioController implements Initializable,CambiaEscenas {
         enviar2.setVisible(false);
         volverMensaje.setVisible(false);
         volverSeguir.setVisible(false);
-        seguir.setVisible(false);
+        buscar.setVisible(false);
         seguirCuenta.setVisible(false);
         cuenta.setVisible(false);
         enviarArchivo.setVisible(false);
@@ -514,7 +514,6 @@ public class InicioController implements Initializable,CambiaEscenas {
         }
     }
 
-    @FXML
     private void seguir(ActionEvent event) throws IOException{
         try{
             mostrarInicio(true);
@@ -549,7 +548,7 @@ public class InicioController implements Initializable,CambiaEscenas {
 
     @Override
     public void mostrarSeguir(boolean valor) {
-        seguir.setVisible(valor);
+        buscar.setVisible(valor);
         seguirCuenta.setVisible(valor);
         volverSeguir.setVisible(valor);
     }
@@ -615,5 +614,17 @@ public class InicioController implements Initializable,CambiaEscenas {
     private void responderTweets(ActionEvent event) throws TwitterException, IOException {
         TwitterBot bot= new TwitterBot();
         bot.responderTweet(timeline, actividadReciente, tweets);
+    }
+
+    @FXML
+    private void buscar(ActionEvent event) throws TwitterException, IOException {
+        char[] nombre = null;
+        nombre = (seguirCuenta.getText()).toCharArray();
+        if (nombre.length == 0) {
+            System.out.println("Ingrese texto");
+        }else{
+            TwitterBot bot = new TwitterBot();
+            bot.buscarUsuario(nombre);
+        }
     }
 }
