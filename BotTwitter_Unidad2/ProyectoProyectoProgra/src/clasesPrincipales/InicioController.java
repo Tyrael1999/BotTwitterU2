@@ -17,6 +17,7 @@ import javafx.scene.image.ImageView;
 import clasesAyuda.*;
 import java.io.File;
 import java.io.IOException;
+import static java.lang.Long.parseLong;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +31,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageViewBuilder;
@@ -48,9 +51,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import proyectoproyectoprogra.MotorClases.TwitterBot;
+import static proyectoproyectoprogra.MotorClases.TwitterBot.isNumeric;
+import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.TwitterException;
+import twitter4j.User;
 
 /**
  * @version 1.2
@@ -104,37 +111,29 @@ public class InicioController implements Initializable,CambiaEscenas {
     @FXML
     private Button volverTweet;
     @FXML
-    private TextArea mensajePrivado;
-    @FXML
-    private Button enviarMensajePrivado;
-    @FXML
-    private Button enviar2;
-    @FXML
-    private Button volverMensaje;
-    @FXML
     private TextArea seguirCuenta;
     @FXML
     private Button volverSeguir;
     @FXML
     private TextArea cuenta;
-    @FXML
-    private Label maxMensaje;
-    @FXML
-    private Label limMens;
-    
     private int MAX = 0;
-    
+    private User yo = null;
     private List<Status> statuses;
     @FXML
     private Button enviarArchivo;
     private GridPane timeline = new GridPane();
     private File selectedFile;
     private int flag = 0;
+    private String textSplit;
     private int tweets = 9;
     @FXML
-    private AnchorPane ventana;
+    private Pane ventana;
     @FXML
     private Button buscar;
+    @FXML
+    private Button enviarMensaje;
+    @FXML
+    private ListView<User> listaUsuarios;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
@@ -147,12 +146,9 @@ public class InicioController implements Initializable,CambiaEscenas {
         tweet.setWrapText(true);
         cuenta.setWrapText(true);
         seguirCuenta.setWrapText(true);
-        mensajePrivado.setWrapText(true);
         cambios.setWrapText(true);
         //botones y labels que no usare
         maximo.setVisible(false);
-        maxMensaje.setVisible(false);
-        limMens.setVisible(false);
         lim.setVisible(false);
         //todo el plano que tiene las opciones para cambiar respuestas
         planoRespuestas.setVisible(false);
@@ -166,15 +162,13 @@ public class InicioController implements Initializable,CambiaEscenas {
         guardarMensajes.setVisible(false);
         cambiarMensajePrivado.setVisible(false);
         cambiarMensajeAutomatico.setVisible(false);
-        volverTweet.setVisible(false);  
-        mensajePrivado.setVisible(false);
-        enviar2.setVisible(false);
-        volverMensaje.setVisible(false);
+        volverTweet.setVisible(false);
         volverSeguir.setVisible(false);
         buscar.setVisible(false);
         seguirCuenta.setVisible(false);
         cuenta.setVisible(false);
         enviarArchivo.setVisible(false);
+        listaUsuarios.setVisible(false);
     }
 
     @FXML
@@ -282,20 +276,20 @@ public class InicioController implements Initializable,CambiaEscenas {
             maximo.setText("0");
         }   
     }
-    public void setProfile() throws TwitterException, IOException{
-        TwitterBot bot = new TwitterBot();
-        if (bot.getOwnUser().getProfileBanner1500x500URL() != null) {
-            ImageView fondo = ImageViewBuilder.create().image(new Image(bot.getOwnUser().getProfileBanner1500x500URL())).build();
+    public void setProfile(User user) throws IOException{
+        ventana.getChildren().clear();
+        Image banner = null;
+        if (user.getProfileBanner1500x500URL() != null) {
+            banner = new Image(user.getProfileBanner1500x500URL());
+            ImageView fondo = ImageViewBuilder.create().image(banner).build();
             fondo.setFitWidth(280);
             fondo.setFitHeight(120);
-            fondo.setLayoutX(500);
-            fondo.setLayoutY(15);
             ventana.getChildren().add(fondo);
         }
-        ImageView perfil = ImageViewBuilder.create().image(new Image(bot.getOwnUser().get400x400ProfileImageURL())).build();
+        ImageView perfil = ImageViewBuilder.create().image(new Image(user.get400x400ProfileImageURL())).build();
         perfil.setFitWidth(60);
         perfil.setFitHeight(50);
-        perfil.setLayoutX(700);
+        perfil.setLayoutX(20);
         perfil.setLayoutY(90);
         ventana.getChildren().add(perfil);
     }
@@ -320,8 +314,9 @@ public class InicioController implements Initializable,CambiaEscenas {
     }
     private void mostrarTimeline() throws IOException{
         try {
-            setProfile();
             TwitterBot bot = new TwitterBot();
+            yo = bot.getOwnUser();
+            setProfile(yo);
             statuses = bot.obtenerTimeline();
             timeline.setPrefSize(statuses.size()*50, statuses.size()*300);
             timeline.setMinSize(statuses.size()*50, statuses.size()*300);
@@ -441,19 +436,17 @@ public class InicioController implements Initializable,CambiaEscenas {
     }
 
     @FXML
-    private void cerrarCambiaRespuesta(ActionEvent event) {
+    private void cerrarCambiaRespuesta(ActionEvent event) throws TwitterException, IOException {
         tweet.clear();
         cuenta.clear();
         seguirCuenta.clear();
-        mensajePrivado.clear();
         cambios.clear();
         maximo.setText("0");
-        maxMensaje.setText("0");
         mostrarTweetear(false);
         mostrarSeguir(false);
-        mostrarMensajesPrivados(false);
         mostrarMensajesPredeterminados(false);
         mostrarInicio(true);
+        setProfile(yo);
     }
 
     @FXML
@@ -461,7 +454,6 @@ public class InicioController implements Initializable,CambiaEscenas {
         cambio = 1;
         cambios.setText(null);
         cambios.setVisible(true);
-        
     }
 
     @FXML
@@ -474,56 +466,14 @@ public class InicioController implements Initializable,CambiaEscenas {
     @FXML
     private void limites(KeyEvent event) {
         maximo.setTextFill(Color.BLACK);
-        maxMensaje.setTextFill(Color.BLACK);    
-        enviar2.setDisable(false); 
         enviar.setDisable(false); 
         maximo.setText("0");
-        maxMensaje.setText("0");
-        if (tweet.getText().length()>=0 || mensajePrivado.getText().length()>=0) {
+        if (tweet.getText().length()>=0) {
             maximo.setText(""+(tweet.getText().length()));
-            maxMensaje.setText(""+mensajePrivado.getText().length());
         }
-        if (tweet.getText().length()>MAX || mensajePrivado.getText().length()>MAX) {
-            maxMensaje.setTextFill(Color.RED);
+        if (tweet.getText().length()>280) {
             maximo.setTextFill(Color.RED);
             enviar.setDisable(true);
-            enviar2.setDisable(true);
-        }
-    }
-
-    @FXML
-    private void escribirMensajePriv(ActionEvent event) {
-        MAX = 10000;
-        mostrarInicio(false);
-        mostrarMensajesPrivados(true);
-    }
-
-    @FXML
-    private void enviarMensajePrivado(ActionEvent event) throws IOException {
-        try {
-            mostrarInicio(true);
-            mostrarMensajesPrivados(false);
-            textos.setMensajePrivado(mensajePrivado.getText());
-            textos.setUsuario(cuenta.getText());
-            mensajePrivado.clear();
-            cuenta.clear();
-            TwitterBot bot = new TwitterBot();
-            bot.enviarMensaje(textos.getMensajePrivado(), textos.getUsuario());
-        } catch (TwitterException ex) {
-            mostrarError(ex.getErrorMessage());
-        }
-    }
-
-    private void seguir(ActionEvent event) throws IOException{
-        try{
-            mostrarInicio(true);
-            mostrarSeguir(false);
-            textos.setUsuarioFollow(seguirCuenta.getText());
-            seguirCuenta.clear();
-            TwitterBot bot = new TwitterBot();
-            bot.seguirUsuario(textos.getUsuarioFollow());
-        }catch (TwitterException ex) {
-            mostrarError(ex.getErrorMessage());
         }
     }
 
@@ -532,8 +482,8 @@ public class InicioController implements Initializable,CambiaEscenas {
         twittear.setVisible(valor);
         Follow.setVisible(valor);
         Repli.setVisible(valor);
-        enviarMensajePrivado.setVisible(valor);
         botonCambiarRespuestas.setVisible(valor);
+        enviarMensaje.setVisible(valor);
     }
 
     @Override
@@ -548,30 +498,21 @@ public class InicioController implements Initializable,CambiaEscenas {
 
     @Override
     public void mostrarSeguir(boolean valor) {
+        listaUsuarios.getItems().clear();
         buscar.setVisible(valor);
         seguirCuenta.setVisible(valor);
         volverSeguir.setVisible(valor);
+        listaUsuarios.setVisible(valor);
     }
+    
+    @FXML
+    public void mostrarMensajesPrivados(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("Chat.fxml"));
+        Scene scene = new Scene(root);
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.show();
 
-    @Override
-    public void mostrarMensajesPrivados(boolean valor) {
-        if (valor) {
-            try {
-                Parent root = FXMLLoader.load(getClass().getResource("Chat.fxml"));
-                Scene scene = new Scene(root);
-                Stage stage = new Stage();
-                stage.setScene(scene);
-                stage.show();
-            } catch (IOException ex) {
-                Logger.getLogger(InicioController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        mensajePrivado.setVisible(valor);
-        enviar2.setVisible(valor);
-        volverMensaje.setVisible(valor);
-        cuenta.setVisible(valor);
-        maxMensaje.setVisible(valor);
-        limMens.setVisible(valor);
     }
 
     @Override
@@ -618,13 +559,72 @@ public class InicioController implements Initializable,CambiaEscenas {
 
     @FXML
     private void buscar(ActionEvent event) throws TwitterException, IOException {
-        char[] nombre = null;
-        nombre = (seguirCuenta.getText()).toCharArray();
-        if (nombre.length == 0) {
+        String nombre = null;
+        nombre = seguirCuenta.getText();
+        if (nombre.length() == 0) {
             System.out.println("Ingrese texto");
         }else{
             TwitterBot bot = new TwitterBot();
-            bot.buscarUsuario(nombre);
+            ResponseList<User> usuarios = bot.searchUser(nombre);
+            int i = 0;
+            for (User usuario : usuarios) {
+                listaUsuarios.getItems().add(i, usuario);
+                i++;
+            }
+            listaUsuarios.setCellFactory(new Callback<ListView<User>, ListCell<User>>() {
+                @Override
+                public ListCell<User> call(ListView<User> param) {
+                     ListCell<User> cell = new ListCell<User>() {
+                         @Override
+                            protected void updateItem(User usuario, boolean empty) {
+                                super.updateItem(usuario, empty);
+                                if(usuario != null) {
+                                    setText(usuario.getScreenName());
+                                } else {
+                                    setText(null);
+                                }
+                            }
+                         };
+                        return cell;
+                    }
+                });
+                listaUsuarios.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        try {
+                            setProfile(listaUsuarios.getSelectionModel().getSelectedItem());
+                            Button seguir = new Button();
+                            boolean validar = bot.validarSeguidos(listaUsuarios.getSelectionModel().getSelectedItem().getId());
+                            if (validar) {
+                                seguir.setText("Dejar de seguir");
+                            }else{
+                                seguir.setText("Seguir");
+                            }
+                            seguir.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent event) {
+                                    if (validar) {
+                                        try {
+                                            bot.dejarSeguir(listaUsuarios.getSelectionModel().getSelectedItem().getScreenName());
+                                        } catch (TwitterException ex) {}
+                                    }else{
+                                        try {
+                                            bot.seguirUsuario(listaUsuarios.getSelectionModel().getSelectedItem().getScreenName());
+                                        } catch (TwitterException ex) {}
+                                    }
+                                    seguir.setDisable(true);
+                                }
+                            });
+                            seguir.setLayoutX(150);
+                            seguir.setLayoutY(120);
+                            ventana.getChildren().add(seguir);
+                        } catch (IOException ex) {
+                            try {
+                                mostrarError(ex.getMessage());
+                            } catch (IOException ex1) {}
+                        } catch (TwitterException ex) {}
+                    }
+                });
         }
     }
 }

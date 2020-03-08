@@ -8,12 +8,15 @@ import clasesPrincipales.InicioController;
 import java.io.File;
 import java.io.IOException;
 import static java.lang.Long.parseLong;
+import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import twitter4j.IDs;
 import twitter4j.Query;
 import twitter4j.QueryResult;
+import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
@@ -69,6 +72,9 @@ public class TwitterBot {
     public void seguirUsuario(String id) throws TwitterException{
         twitter.createFriendship(id);
     }
+    public void dejarSeguir(String id) throws TwitterException{
+        twitter.destroyFriendship(id);
+    }
     /**
      * Metodo que envia un mensaje privado a un usuario seguido
      * @param mensaje String que contiene el mensaje
@@ -85,6 +91,15 @@ public class TwitterBot {
      */
     public List<Status> obtenerTimeline() throws TwitterException{
         return twitter.getHomeTimeline();
+    }
+    public boolean validarSeguidos(long id) throws TwitterException{
+        IDs ids = twitter.getFriendsIDs(-1);
+        for (long amigo : ids.getIDs()) {
+            if (amigo == id) {
+                return true;
+            }
+        }
+        return false;
     }
     /**
      * Metodo que da "like" a un tweet determinado
@@ -114,16 +129,16 @@ public class TwitterBot {
     public User getOwnUser()throws TwitterException{
         return twitter.showUser("javinMoraga");
     }
-    public void buscarUsuario(char[] nombre)throws TwitterException{
+    public ResponseList<User> searchUser(String nombre) throws TwitterException{
+        return twitter.searchUsers(nombre, 1);
+    }
+    public ArrayList<User> buscarUsuario(char[] nombre)throws TwitterException{
         IDs ids = twitter.getFollowersIDs(-1);
+        ArrayList<User> usuarios = new ArrayList<User>();
         do {
-            for (long id : ids.getIDs()) {      
-                String ID = "followers ID #" + id;
-                String[] firstname = ID.split("#");
-                String first_Name = firstname[0];
-                String Id = firstname[1];
-                String Name = twitter.showUser(id).getName();
+            for (long id : ids.getIDs()) {
                 String usuario = twitter.showUser(id).getScreenName();
+                User perfil = twitter.showUser(id);
                 char[] cadenaUsuario = usuario.toCharArray();
                 int encontrado = 0;
                 for (int i = 0; i < cadenaUsuario.length; i++) {
@@ -137,12 +152,13 @@ public class TwitterBot {
                             l++;
                         }
                         if (encontrado == 1) {
-                            System.out.println("Usuario: "+usuario+"\n");
+                            usuarios.add(perfil);
                         }
                     }
                 }
             }
         } while (ids.hasNext());
+        return usuarios;
     }
     public void responderTweet(GridPane timeline, ScrollPane actividadReciente, int tweets) throws IOException{   
         Query query;
@@ -183,35 +199,7 @@ public class TwitterBot {
                     
                 }
             }
-        }catch (TwitterException ex) {}/*
-        try {
-            query = new Query("@javinMoraga #gustar");
-            result = twitter.search(query);
-            for (Status status : result.getTweets()) {
-                twitter.createFavorite(status.getId());
-                statuses = obtenerTimeline();
-                GridPane tweet = aux.crearTweet(0, statuses);
-                aux.insertRows(1, timeline);
-                timeline.add(tweet, 0, 0);
-                tweets++;
-                actividadReciente.setContent(timeline);
-                System.out.println("@" + status.getUser().getScreenName() + " : " + status.getText());
-            }
-        } catch (TwitterException ex) {}
-        try {
-            query = new Query("@javinMoraga #difundir");
-            result = twitter.search(query);
-            for (Status status : result.getTweets()) {
-                twitter.retweetStatus(status.getId());
-                statuses = obtenerTimeline();
-                GridPane tweet = aux.crearTweet(0, statuses);
-                aux.insertRows(1, timeline);
-                timeline.add(tweet, 0, 0);
-                tweets++;
-                actividadReciente.setContent(timeline);
-                System.out.println("@" + status.getUser().getScreenName() + " : " + status.getText());
-            }
-        } catch (TwitterException ex) {}*/
+        }catch (TwitterException ex) {}
     }
     public static boolean isNumeric(String str) {
         if (str == null) {

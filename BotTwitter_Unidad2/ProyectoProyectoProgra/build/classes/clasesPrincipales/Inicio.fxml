@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -9,10 +10,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" fx:id="ventana" prefHeight="556.0" prefWidth="795.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clasesPrincipales.InicioController">
+<AnchorPane id="AnchorPane" prefHeight="556.0" prefWidth="795.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clasesPrincipales.InicioController">
    <children>
       <Button fx:id="enviarArchivo" layoutX="521.0" layoutY="417.0" mnemonicParsing="false" onAction="#subirArchivo" prefHeight="35.0" prefWidth="120.0" text="Enviar Archivo" />
-      <TextArea fx:id="mensajePrivado" layoutX="515.0" layoutY="288.0" onKeyPressed="#limites" onKeyReleased="#limites" prefHeight="141.0" prefWidth="265.0" promptText="Mensaje" />
       <TextArea fx:id="cuenta" layoutX="515.0" layoutY="171.0" prefHeight="35.0" prefWidth="265.0" promptText="Destinatario" />
       <TextArea fx:id="seguirCuenta" layoutX="523.0" layoutY="271.0" prefHeight="35.0" prefWidth="250.0" promptText="Usuario" />
       <Button fx:id="enviar" layoutX="523.0" layoutY="175.0" mnemonicParsing="false" onAction="#enviar" prefHeight="35.0" prefWidth="120.0" text="Enviar" />
@@ -43,17 +43,11 @@
             <Label fx:id="lim" text="/280" />
          </children>
       </HBox>
-      <Button fx:id="enviarMensajePrivado" layoutX="550.0" layoutY="450.0" mnemonicParsing="false" onAction="#escribirMensajePriv" prefHeight="50.0" prefWidth="200.0" text="Enviar Mensaje Privado" />
-      <Button fx:id="enviar2" layoutX="523.0" layoutY="227.0" mnemonicParsing="false" onAction="#enviarMensajePrivado" prefHeight="35.0" prefWidth="120.0" text="Enviar" />
-      <Button fx:id="volverMensaje" layoutX="658.0" layoutY="227.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="35.0" prefWidth="120.0" text="Volver" />
       <Button fx:id="buscar" layoutX="523.0" layoutY="227.0" mnemonicParsing="false" onAction="#buscar" prefHeight="35.0" prefWidth="120.0" text="Buscar" />
       <Button fx:id="volverSeguir" layoutX="658.0" layoutY="227.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="35.0" prefWidth="120.0" text="Volver" />
-      <HBox layoutX="777.0" layoutY="431.0">
-         <children>
-            <Label fx:id="maxMensaje" text="0" />
-            <Label fx:id="limMens" text="/10000" />
-         </children>
-      </HBox>
       <ScrollPane fx:id="actividadReciente" layoutX="13.0" layoutY="34.0" maxHeight="504.0" maxWidth="479.0" minHeight="400.0" minWidth="350.0" prefHeight="504.0" prefWidth="479.0" />
+      <Button fx:id="enviarMensaje" layoutX="550.0" layoutY="450.0" mnemonicParsing="false" onAction="#mostrarMensajesPrivados" prefHeight="50.0" prefWidth="200.0" text="Enviar mensaje privado" />
+      <ListView fx:id="listaUsuarios" layoutX="523.0" layoutY="320.0" prefHeight="220.0" prefWidth="250.0" />
+      <AnchorPane fx:id="ventana" layoutX="496.0" layoutY="8.0" maxHeight="128.0" maxWidth="277.0" minHeight="128.0" minWidth="277.0" prefHeight="128.0" prefWidth="277.0" />
    </children>
 </AnchorPane>
