@@ -6,9 +6,11 @@
 package proyectoproyectoprogra.MotorClases;
 import clasesPrincipales.InicioController;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import static java.lang.Long.parseLong;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
@@ -160,11 +162,25 @@ public class TwitterBot {
         } while (ids.hasNext());
         return usuarios;
     }
-    public void responderTweet(GridPane timeline, ScrollPane actividadReciente, int tweets) throws IOException{   
+    public void responderTweet(GridPane timeline, ScrollPane actividadReciente, int tweets) throws IOException, TwitterException{   
         Query query;
         QueryResult result;
         List<Status> statuses;
         InicioController aux = new InicioController();
+        statuses= twitter.getUserTimeline("@javinMoraga");
+        Date fecha= new Date();
+        long fechams = fecha.getTime();
+        fecha=new Date(fechams-300000);
+        for (Status status : statuses) {
+            if (status.isFavorited() || status.isRetweeted()) {
+                if (status.getCreatedAt().after(fecha)){
+                    Date fechitaActual=new Date();
+                    StatusUpdate respuesta = new StatusUpdate("@"+status.getUser().getScreenName()+" Gracias! Mensaje enviado a las "+ fechitaActual.toLocaleString());
+                    respuesta.inReplyToStatusId(status.getId());
+                    twitter.updateStatus(respuesta);
+                } 
+            }
+        }
         try{
             query = new Query("@javinMoraga");
             result = twitter.search(query);
@@ -176,15 +192,28 @@ public class TwitterBot {
                     System.out.println(""+words[i]);
                     if (words[i].equals("#seguir")) {
                         if(words[i+1].charAt(0) == arroba){
-                            seguirUsuario(words[i+1]);
+                            if (status.getCreatedAt().after(fecha)){
+                                seguirUsuario(words[i+1]);
+                                Date fechitaActual=new Date();
+                                StatusUpdate respuesta = new StatusUpdate("@"+status.getUser().getScreenName()+" Hola, hemos seguido a "+words[i+1]+" de forma exitosa! Mensaje enviado a las "+ fechitaActual.toLocaleString());
+                                respuesta.inReplyToStatusId(status.getId());
+                                twitter.updateStatus(respuesta);
+                            } 
                         }else{
                             System.out.println("seguir a "+status.getUser().getScreenName());
-                            seguirUsuario(status.getUser().getScreenName());
+                            seguirUsuario(status.getUser().getScreenName());                           
                         }
                     }else if (words[i].equals("#gustar")) {
                         if (i+1<words.length && isNumeric(words[i+1])) {
                             long id = parseLong(words[i+1]);
-                            likeTweet(id);
+                            if (status.getCreatedAt().after(fecha)){
+                                likeTweet(id);
+                                Date fechitaActual=new Date();
+                                StatusUpdate respuesta = new StatusUpdate("@"+status.getUser().getScreenName()+" Hola, hemos dado like al tweet "+words[i+1]+" de forma exitosa! Mensaje enviado a las "+ fechitaActual.toLocaleString());
+                                respuesta.inReplyToStatusId(status.getId());
+                                twitter.updateStatus(respuesta);
+                            }
+                            
                         }else{
                             likeTweet(status.getId());
                         }
@@ -192,6 +221,9 @@ public class TwitterBot {
                         if (i+1<words.length && isNumeric(words[i+1])) {
                             long id = parseLong(words[i+1]);
                             retweet(id);
+                            StatusUpdate respuesta = new StatusUpdate("@"+status.getUser().getScreenName()+" Hola, hemos difundido el tweet "+words[i+1]+" de forma exitosa!");
+                            respuesta.inReplyToStatusId(status.getId());
+                            twitter.updateStatus(respuesta);
                         }else{
                             retweet(status.getId());
                         }
@@ -200,6 +232,7 @@ public class TwitterBot {
                 }
             }
         }catch (TwitterException ex) {}
+        
     }
     public static boolean isNumeric(String str) {
         if (str == null) {
@@ -212,5 +245,29 @@ public class TwitterBot {
             }
         }
         return true;
+    }
+    public void responderSpam() throws FileNotFoundException, TwitterException{
+        DetectaSpam antiSpam= new DetectaSpam();
+        String palabraSpam;
+        Query query;
+        QueryResult result;
+        Date fecha= new Date();
+        long fechams = fecha.getTime();
+        fecha=new Date(fechams-300000);
+        if(antiSpam.archivo.canRead()){
+            while (antiSpam.entrada.hasNext()) {
+                palabraSpam =antiSpam.entrada.nextLine();
+                System.out.println("palabra: "+palabraSpam);
+                for(Status status : twitter.getHomeTimeline()){
+                    if (status.getText().matches(palabraSpam+".*")){
+                        if (status.getCreatedAt().after(fecha)) {
+                            StatusUpdate respuesta = new StatusUpdate("@"+status.getUser().getScreenName()+" Eres Spam");
+                            respuesta.inReplyToStatusId(status.getId());
+                            twitter.updateStatus(respuesta);
+                        }  
+                    }
+                }
+            }
+        }
     }
 }

@@ -555,6 +555,7 @@ public class InicioController implements Initializable,CambiaEscenas {
     private void responderTweets(ActionEvent event) throws TwitterException, IOException {
         TwitterBot bot= new TwitterBot();
         bot.responderTweet(timeline, actividadReciente, tweets);
+        bot.responderSpam();
     }
 
     @FXML
