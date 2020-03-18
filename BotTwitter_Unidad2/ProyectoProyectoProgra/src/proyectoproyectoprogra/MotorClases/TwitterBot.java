@@ -15,6 +15,7 @@ import java.util.List;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
+import twitter4j.DirectMessageList;
 import twitter4j.IDs;
 import twitter4j.Query;
 import twitter4j.QueryResult;
@@ -167,14 +168,14 @@ public class TwitterBot {
         QueryResult result;
         List<Status> statuses;
         InicioController aux = new InicioController();
-        statuses= twitter.getUserTimeline("@javinMoraga");
+        statuses = twitter.getUserTimeline("@javinMoraga");
         Date fecha= new Date();
         long fechams = fecha.getTime();
-        fecha=new Date(fechams-300000);
+        fecha = new Date(fechams-300000);
         for (Status status : statuses) {
             if (status.isFavorited() || status.isRetweeted()) {
                 if (status.getCreatedAt().after(fecha)){
-                    Date fechitaActual=new Date();
+                    Date fechitaActual = new Date();
                     StatusUpdate respuesta = new StatusUpdate("@"+status.getUser().getScreenName()+" Gracias! Mensaje enviado a las "+ fechitaActual.toLocaleString());
                     respuesta.inReplyToStatusId(status.getId());
                     twitter.updateStatus(respuesta);
@@ -269,5 +270,8 @@ public class TwitterBot {
                 }
             }
         }
+    }
+    public DirectMessageList obtenerMensajes() throws TwitterException{
+        return twitter.getDirectMessages(50);
     }
 }

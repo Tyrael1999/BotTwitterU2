@@ -59,6 +59,8 @@ public class AyudaController implements Initializable {
             case "Ingrese una id valida.":
                 this.mensaje.setText("ERROR: Ingrese una id valida.");
                 break;
+            case "Rate limit exceeded":
+                this.mensaje.setText("ERROR: Demasiadas consultas, por favor espere.");
             default:
                 this.mensaje.setText(mensaje);
         }

@@ -49,6 +49,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -200,15 +201,22 @@ public class InicioController implements Initializable,CambiaEscenas {
         HBox casilla1 = new HBox();
         HBox casilla3 = new HBox();
         HBox casilla2 = new HBox();
-        TextArea texto = new TextArea();
+        TextFlow texto = new TextFlow();
+        String[] content = statuses.get(j).getText().split(" ");
+        for (String palabra : content) {
+            Text word = new Text(palabra+" ");
+            for (int i = 0; i < word.getText().length(); i++) { 
+                if (word.getText().charAt(i)== '@' || word.getText().charAt(i)== '#') {
+                    word.setFill(Color.BLUE);
+                }
+            }
+            texto.getChildren().add(word);
+        }
         ImageView foto = ImageViewBuilder.create().image(new Image(statuses.get(j).getUser().get400x400ProfileImageURL())).build();
         foto.setFitHeight(50);
         foto.setFitWidth(50);
         Label id = new Label();
         id.setText(statuses.get(j).getUser().getName()+"\n  @"+statuses.get(j).getUser().getScreenName());
-        texto.setText(statuses.get(j).getText());
-        texto.setEditable(false);
-        texto.setWrapText(true);
         Button like = handleNewLike(j, statuses);
         Button retweet = handleNewRetweet(j, statuses);
         texto.setPrefSize(600, 600);
@@ -338,7 +346,7 @@ public class InicioController implements Initializable,CambiaEscenas {
             actividadReciente.fitToHeightProperty().set(true);
             actividadReciente.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
         } catch (TwitterException ex) {
-            mostrarError(ex.getMessage());
+            mostrarError(ex.getErrorMessage());
         }
     }
 
@@ -553,9 +561,13 @@ public class InicioController implements Initializable,CambiaEscenas {
     }   
     @FXML
     private void responderTweets(ActionEvent event) throws TwitterException, IOException {
-        TwitterBot bot= new TwitterBot();
-        bot.responderTweet(timeline, actividadReciente, tweets);
-        bot.responderSpam();
+        try {
+            TwitterBot bot= new TwitterBot();
+            bot.responderTweet(timeline, actividadReciente, tweets);
+            bot.responderSpam();
+        } catch (IOException ex) {
+            mostrarError(ex.getMessage());
+        }
     }
 
     @FXML
