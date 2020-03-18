@@ -71,13 +71,18 @@ public class ChatController implements Initializable {
     @FXML
     private Label limMens;
     Mensajes textos = new Mensajes();
+    private DirectMessageList listaMensajes;
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        mensaje.setEditable(false);
-        enviar.setDisable(true);
+        try {
+            TwitterBot bot = new TwitterBot();
+            listaMensajes = bot.obtenerMensajes();
+            mensaje.setEditable(false);
+            enviar.setDisable(true);
+        } catch (TwitterException ex) {} catch (IOException ex) {}
     }    
 
     @FXML
@@ -132,7 +137,7 @@ public class ChatController implements Initializable {
                         mensaje.setEditable(true);
                         enviar.setDisable(false);
                         try {
-                            mensajes(bot.obtenerMensajes(), bot.getOwnId(),listaUsuarios.getSelectionModel().getSelectedItem().getId());
+                            mensajes(listaMensajes, bot.getOwnId(),listaUsuarios.getSelectionModel().getSelectedItem().getId());
                         } catch (TwitterException ex) { System.out.println(ex.getErrorMessage());}
                         perfil.setImage(new Image(listaUsuarios.getSelectionModel().getSelectedItem().get400x400ProfileImageURL()));
                         nombreUsuario.setText(listaUsuarios.getSelectionModel().getSelectedItem().getScreenName());
@@ -146,11 +151,15 @@ public class ChatController implements Initializable {
         ventanaChat.getRowConstraints().clear();
         int flag = 0;
         for (int i = 0; i < mensajes.size(); i++) {
+            RowConstraints row = new RowConstraints(50);
             if (mensajes.get(i).getSenderId() == amigo) {
                 flag = 1;
             }
-            RowConstraints row = new RowConstraints(50);
-            ventanaChat.getRowConstraints().add(row);
+            if (mensajes.get(i).getSenderId() == id && mensajes.get(i).getRecipientId() == amigo) {
+                ventanaChat.getRowConstraints().add(row);
+            }else if (mensajes.get(i).getSenderId() == amigo){
+                ventanaChat.getRowConstraints().add(row);
+            }
         }
         if (flag == 1) {
             int count = 0;
@@ -162,7 +171,7 @@ public class ChatController implements Initializable {
                 chat.setWrapText(true);
                 chat.setTextOverrun(OverrunStyle.CLIP);
                 chat.setStyle("-fx-border-color:black");
-                if (mensajes.get(i).getSenderId() == id) {
+                if (mensajes.get(i).getSenderId() == id && mensajes.get(i).getRecipientId() == amigo) {
                     chat.setBackground(new Background(new BackgroundFill(Color.DEEPSKYBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
                     ventanaChat.add(chat, 1, count);
                 }else if (mensajes.get(i).getSenderId() == amigo){
