@@ -5,8 +5,10 @@
  */
 package proyectoproyectoprogra.MotorClases;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.Scanner;
 
 /**
@@ -15,9 +17,9 @@ import java.util.Scanner;
  */
 public class DetectaSpam {
     File archivo;
-    Scanner entrada;
+    BufferedReader br;
     public DetectaSpam() throws FileNotFoundException{
-        archivo= new File("palabras tristes.txt");
-        entrada= new Scanner(archivo);
+        archivo= new File("spamwords.txt");
+        br = new BufferedReader(new FileReader(archivo));
     }
 }

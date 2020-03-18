@@ -247,28 +247,29 @@ public class TwitterBot {
         }
         return true;
     }
-    public void responderSpam() throws FileNotFoundException, TwitterException{
+    public void responderSpam() throws FileNotFoundException, TwitterException, IOException{
         DetectaSpam antiSpam= new DetectaSpam();
         String palabraSpam;
         Query query;
         QueryResult result;
         Date fecha= new Date();
+        boolean spamito=true;
         long fechams = fecha.getTime();
         fecha=new Date(fechams-300000);
-        if(antiSpam.archivo.canRead()){
-            while (antiSpam.entrada.hasNext()) {
-                palabraSpam =antiSpam.entrada.nextLine();
-                System.out.println("palabra: "+palabraSpam);
-                for(Status status : twitter.getHomeTimeline()){
-                    if (status.getText().matches(palabraSpam+".*")){
-                        if (status.getCreatedAt().after(fecha)) {
-                            StatusUpdate respuesta = new StatusUpdate("@"+status.getUser().getScreenName()+" Eres Spam");
-                            respuesta.inReplyToStatusId(status.getId());
-                            twitter.updateStatus(respuesta);
-                        }  
-                    }
+        for(Status status : twitter.getHomeTimeline()){
+            while(antiSpam.br.ready() && spamito){
+                palabraSpam =antiSpam.br.readLine();
+                if (status.getText().matches("(.*)"+palabraSpam+"(.*)")){
+                    if (status.getCreatedAt().after(fecha)) {
+                        StatusUpdate respuesta = new StatusUpdate("@"+status.getUser().getScreenName()+" Eres Spam");
+                        respuesta.inReplyToStatusId(status.getId());
+                        twitter.updateStatus(respuesta);
+                        spamito=false;
+                    }  
                 }
             }
+            antiSpam= new DetectaSpam();
+            spamito=true;
         }
     }
     public DirectMessageList obtenerMensajes() throws TwitterException{
