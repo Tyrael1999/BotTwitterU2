@@ -12,7 +12,6 @@ import static java.lang.Long.parseLong;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import twitter4j.DirectMessageList;
@@ -136,31 +135,38 @@ public class TwitterBot {
         return twitter.searchUsers(nombre, 1);
     }
     public ArrayList<User> buscarUsuario(char[] nombre)throws TwitterException{
-        IDs ids = twitter.getFollowersIDs(-1);
+        IDs seguidores = twitter.getFollowersIDs(-1);
+        IDs seguidos = twitter.getFriendsIDs(-1);
         ArrayList<User> usuarios = new ArrayList<User>();
         do {
-            for (long id : ids.getIDs()) {
-                String usuario = twitter.showUser(id).getScreenName();
-                User perfil = twitter.showUser(id);
-                char[] cadenaUsuario = usuario.toCharArray();
-                int encontrado = 0;
-                for (int i = 0; i < cadenaUsuario.length; i++) {
-                    if (nombre[0] == cadenaUsuario[i]) {
-                        int l = i;
-                        for (int j = 0; j < nombre.length; j++) {
-                            encontrado = 0;
-                            if (nombre[j] == cadenaUsuario[l]) {
-                                encontrado = 1;
+            for (long seguidor : seguidores.getIDs()) {
+                String usuario = twitter.showUser(seguidor).getScreenName();
+                usuario = usuario.toLowerCase();
+                for (long seguido : seguidos.getIDs()) {
+                    if (seguidor == seguido) {
+                        System.out.println(usuario);
+                        User perfil = twitter.showUser(seguido);
+                        char[] cadenaUsuario = usuario.toCharArray();
+                        int encontrado = 0;
+                        for (int i = 0; i < cadenaUsuario.length; i++) {
+                            if (nombre[0] == cadenaUsuario[i]) {
+                                int l = i;
+                                for (int j = 0; j < nombre.length; j++) {
+                                    encontrado = 0;
+                                    if (nombre[j] == cadenaUsuario[l]) {
+                                        encontrado = 1;
+                                    }
+                                    l++;
+                                }
+                                if (encontrado == 1) {
+                                    usuarios.add(perfil);
+                                }
                             }
-                            l++;
-                        }
-                        if (encontrado == 1) {
-                            usuarios.add(perfil);
                         }
                     }
                 }
             }
-        } while (ids.hasNext());
+        } while (seguidores.hasNext() || seguidos.hasNext());
         return usuarios;
     }
     public void responderTweet(GridPane timeline, ScrollPane actividadReciente, int tweets) throws IOException, TwitterException{   

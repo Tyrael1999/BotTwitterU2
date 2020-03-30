@@ -7,46 +7,35 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" prefHeight="556.0" prefWidth="795.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clasesPrincipales.InicioController">
+<AnchorPane id="AnchorPane" prefHeight="556.0" prefWidth="795.0" style="-fx-background-color: #15202b;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clasesPrincipales.InicioController">
    <children>
-      <Button fx:id="enviarArchivo" layoutX="521.0" layoutY="417.0" mnemonicParsing="false" onAction="#subirArchivo" prefHeight="35.0" prefWidth="120.0" text="Enviar Archivo" />
+      <Button fx:id="enviarArchivo" layoutX="521.0" layoutY="417.0" mnemonicParsing="false" onAction="#subirArchivo" onMouseMoved="#colorBoton2" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #1da1f2; -fx-background-radius: 10 10 10 10;" text="Enviar Archivo" textFill="WHITE" />
       <TextArea fx:id="cuenta" layoutX="515.0" layoutY="171.0" prefHeight="35.0" prefWidth="265.0" promptText="Destinatario" />
       <TextArea fx:id="seguirCuenta" layoutX="523.0" layoutY="271.0" prefHeight="35.0" prefWidth="250.0" promptText="Usuario" />
-      <Button fx:id="enviar" layoutX="523.0" layoutY="175.0" mnemonicParsing="false" onAction="#enviar" prefHeight="35.0" prefWidth="120.0" text="Enviar" />
-      <Button fx:id="volverTweet" layoutX="658.0" layoutY="175.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="35.0" prefWidth="120.0" text="Volver" />
-      <Text layoutX="14.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Actividad reciente" />
-      <Button fx:id="twittear" layoutX="550.0" layoutY="150.0" mnemonicParsing="false" onAction="#handleTwittear" prefHeight="50.0" prefWidth="200.0" text="Twittear" />
-      <Button fx:id="Follow" layoutX="550.0" layoutY="225.0" mnemonicParsing="false" onAction="#handleFollow" prefHeight="50.0" prefWidth="200.0" text="Buscar Usuario" />
-      <Button fx:id="Repli" layoutX="550.0" layoutY="300.0" mnemonicParsing="false" onAction="#responderTweets" prefHeight="50.0" prefWidth="200.0" text="Responder a tweets" />
+      <Button fx:id="enviar" layoutX="523.0" layoutY="175.0" mnemonicParsing="false" onAction="#enviar" onMouseMoved="#colorBoton3" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #1da1f2; -fx-background-radius: 10 10 10 10;" text="Enviar" textFill="WHITE" />
+      <Button fx:id="volverTweet" layoutX="658.0" layoutY="175.0" mnemonicParsing="false" onAction="#volver" onMouseMoved="#colorBoton4" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #1da1f2; -fx-background-radius: 10 10 10 10;" text="Volver" textFill="WHITE" />
+      <Text fill="WHITE" layoutX="14.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Inicio">
+         <font>
+            <Font size="20.0" />
+         </font></Text>
+      <Button fx:id="Follow" layoutX="550.0" layoutY="225.0" mnemonicParsing="false" onAction="#handleFollow" onMouseMoved="#colorBoton5" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #1da1f2; -fx-background-radius: 10 10 10 10;" text="Buscar Usuario" textFill="WHITE" />
+      <Button fx:id="twittear" layoutX="550.0" layoutY="150.0" mnemonicParsing="false" onAction="#handleTwittear" onMouseMoved="#colorBoton6" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #1da1f2; -fx-background-radius: 10 10 10 10;" text="Twittear" textFill="WHITE" />
+      <Button fx:id="Repli" layoutX="550.0" layoutY="300.0" mnemonicParsing="false" onAction="#responderTweets" onMouseMoved="#colorBoton7" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #1da1f2; -fx-background-radius: 10 10 10 10;" text="Responder a tweets" textFill="WHITE" />
       <TextArea fx:id="tweet" layoutX="515.0" layoutY="226.0" onKeyPressed="#limites" onKeyReleased="#limites" prefHeight="160.0" prefWidth="265.0" />
-      <Button fx:id="botonCambiarRespuestas" layoutX="550.0" layoutY="375.0" mnemonicParsing="false" onAction="#abrirCambiaRespuesta" prefHeight="50.0" prefWidth="200.0" text="Cambiar mensajes de respuesta" />
-      <Pane fx:id="planoRespuestas" layoutX="496.0" layoutY="140.0" prefHeight="396.0" prefWidth="277.0" style="-fx-border-color: black;">
-         <children>
-            <Button fx:id="cambiarMensajeAutomatico" layoutX="175.0" layoutY="16.0" mnemonicParsing="false" onAction="#cambiarReacciones" prefHeight="17.0" prefWidth="95.0" text="Cambiar" />
-            <Text fx:id="encabezado1" layoutX="7.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Respuesta a reacciones" wrappingWidth="143.0" />
-            <Label fx:id="mensaje1" layoutX="7.0" layoutY="48.0" prefHeight="50.0" prefWidth="265.0" text="Label" />
-            <Label fx:id="mensaje2" layoutX="7.0" layoutY="153.0" prefHeight="50.0" prefWidth="265.0" text="Label" />
-            <Text fx:id="encabezado2" layoutX="7.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mensaje Privado" wrappingWidth="134.13671875" />
-            <Button fx:id="cambiarMensajePrivado" layoutX="175.0" layoutY="132.0" mnemonicParsing="false" onAction="#cambiarPrivado" prefHeight="17.0" prefWidth="95.0" text="Cambiar" />
-            <Button fx:id="guardarMensajes" layoutX="150.0" layoutY="316.0" mnemonicParsing="false" onAction="#guardarCambios" prefHeight="25.0" prefWidth="120.0" text="Guardar Cambios" />
-            <Button fx:id="predeterminado" layoutX="7.0" layoutY="316.0" mnemonicParsing="false" onAction="#volverPredeterminado" prefHeight="25.0" prefWidth="120.0" text="Predeterminado" />
-            <TextArea fx:id="cambios" layoutX="6.0" layoutY="210.0" onKeyTyped="#limites" prefHeight="81.0" prefWidth="265.0" />
-            <Button fx:id="volver" layoutX="92.0" layoutY="355.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="25.0" prefWidth="95.0" text="volver" />
-         </children>
-      </Pane>
+      <Button fx:id="recargar" layoutX="550.0" layoutY="375.0" mnemonicParsing="false" onAction="#refresh" onMouseMoved="#colorBoton8" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #1da1f2; -fx-background-radius: 10 10 10 10;" text="Recargar timeline" textFill="WHITE" />
       <HBox layoutX="777.0" layoutY="392.0">
          <children>
-            <Label fx:id="maximo" text="0" />
-            <Label fx:id="lim" text="/280" />
+            <Label fx:id="maximo" text="0" textFill="WHITE" />
+            <Label fx:id="lim" text="/280" textFill="WHITE" />
          </children>
       </HBox>
-      <Button fx:id="buscar" layoutX="523.0" layoutY="227.0" mnemonicParsing="false" onAction="#buscar" prefHeight="35.0" prefWidth="120.0" text="Buscar" />
-      <Button fx:id="volverSeguir" layoutX="658.0" layoutY="227.0" mnemonicParsing="false" onAction="#cerrarCambiaRespuesta" prefHeight="35.0" prefWidth="120.0" text="Volver" />
-      <ScrollPane fx:id="actividadReciente" layoutX="13.0" layoutY="34.0" maxHeight="504.0" maxWidth="479.0" minHeight="400.0" minWidth="350.0" prefHeight="504.0" prefWidth="479.0" />
-      <Button fx:id="enviarMensaje" layoutX="550.0" layoutY="450.0" mnemonicParsing="false" onAction="#mostrarMensajesPrivados" prefHeight="50.0" prefWidth="200.0" text="Enviar mensaje privado" />
+      <Button fx:id="buscar" layoutX="523.0" layoutY="227.0" mnemonicParsing="false" onAction="#buscar" onMouseMoved="#colorBoton1" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #1da1f2; -fx-background-radius: 10 10 10 10;" text="Buscar" textFill="WHITE" />
+      <Button fx:id="volverSeguir" layoutX="658.0" layoutY="227.0" mnemonicParsing="false" onAction="#volver" onMouseMoved="#colorBoton9" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #1da1f2; -fx-background-radius: 10 10 10 10;" text="Volver" textFill="WHITE" />
+      <ScrollPane fx:id="actividadReciente" layoutX="13.0" layoutY="34.0" maxHeight="504.0" maxWidth="479.0" minHeight="400.0" minWidth="350.0" prefHeight="504.0" prefWidth="479.0" style="-fx-background-color: #15202b; -fx-background-radius: 18 18 18 18; -fx-border-radius: 18 18 18 18;" />
+      <Button fx:id="enviarMensaje" layoutX="550.0" layoutY="450.0" mnemonicParsing="false" onAction="#mostrarMensajesPrivados" onMouseMoved="#colorBoton10" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #1da1f2; -fx-background-radius: 10 10 10 10;" text="Enviar mensaje privado" textFill="WHITE" />
       <ListView fx:id="listaUsuarios" layoutX="523.0" layoutY="320.0" prefHeight="220.0" prefWidth="250.0" />
       <AnchorPane fx:id="ventana" layoutX="496.0" layoutY="8.0" maxHeight="128.0" maxWidth="277.0" minHeight="128.0" minWidth="277.0" prefHeight="128.0" prefWidth="277.0" />
    </children>

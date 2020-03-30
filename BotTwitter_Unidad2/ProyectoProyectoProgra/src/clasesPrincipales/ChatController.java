@@ -9,13 +9,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -34,8 +33,13 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
 import twitter4j.DirectMessageList;
 import twitter4j.User;
@@ -109,16 +113,17 @@ public class ChatController implements Initializable {
         }else{
             TwitterBot bot = new TwitterBot();
             List<User> usuarios = bot.buscarUsuario(nombre);
-            int i = 0;
-            for (User usuario : usuarios) {
-                listaUsuarios.getItems().add(i, usuario);
-                i++;
-            }
+            if (!usuarios.isEmpty()) {  
+                int i = 0;
+                for (User usuario : usuarios) {
+                    listaUsuarios.getItems().add(i, usuario);
+                    i++;
+                }
                 listaUsuarios.setCellFactory(new Callback<ListView<User>, ListCell<User>>() {
                     @Override
                     public ListCell<User> call(ListView<User> param) {
-                         ListCell<User> cell = new ListCell<User>() {
-                             @Override
+                        ListCell<User> cell = new ListCell<User>() {
+                            @Override
                             protected void updateItem(User usuario, boolean empty) {
                                 super.updateItem(usuario, empty);
                                 if(usuario != null) {
@@ -127,7 +132,7 @@ public class ChatController implements Initializable {
                                     setText(null);
                                 }
                             }
-                         };
+                        };
                         return cell;
                     }
                 });
@@ -138,53 +143,53 @@ public class ChatController implements Initializable {
                         enviar.setDisable(false);
                         try {
                             mensajes(listaMensajes, bot.getOwnId(),listaUsuarios.getSelectionModel().getSelectedItem().getId());
+                            ventanaContactor.setVvalue(1.0);
                         } catch (TwitterException ex) { System.out.println(ex.getErrorMessage());}
                         perfil.setImage(new Image(listaUsuarios.getSelectionModel().getSelectedItem().get400x400ProfileImageURL()));
                         nombreUsuario.setText(listaUsuarios.getSelectionModel().getSelectedItem().getScreenName());
                     }
                 });
+            }
         }
+        buscador.clear();
+        ventanaContactor.setVvalue(1.0);
     }
     
     private void mensajes(DirectMessageList mensajes, long id, long amigo){
         ventanaChat.getChildren().clear();
         ventanaChat.getRowConstraints().clear();
-        int flag = 0;
-        for (int i = 0; i < mensajes.size(); i++) {
-            RowConstraints row = new RowConstraints(50);
-            if (mensajes.get(i).getSenderId() == amigo) {
-                flag = 1;
-            }
+        int count = 0;
+        for (int i = mensajes.size()-1 ; i >= 0  ; i--) {
+            System.out.println(mensajes.get(i).getText());
+            VBox burbuja = new VBox();
+            TextFlow chat = new TextFlow();
+            Text mensaje = new Text(mensajes.get(i).getText());
+            mensaje.setFill(Color.WHITE);
+            chat.getChildren().add(mensaje);
+            burbuja.setAlignment(Pos.CENTER);
+            burbuja.getChildren().add(chat);
+            burbuja.setScaleShape(true);
+            burbuja.setStyle("-fx-border-color:black; -fx-border-radius: 5 5 5 5;");
+            RowConstraints row = new RowConstraints();
+            row.setVgrow(Priority.ALWAYS);
+            burbuja.setPadding(new Insets(10, 10, 10, 10));
+            burbuja.maxHeightProperty().bind(burbuja.heightProperty());
             if (mensajes.get(i).getSenderId() == id && mensajes.get(i).getRecipientId() == amigo) {
+                burbuja.setBackground(new Background(new BackgroundFill(Color.DEEPSKYBLUE, new CornerRadii(5,5,5,5,false), Insets.EMPTY)));
                 ventanaChat.getRowConstraints().add(row);
+                ventanaChat.add(burbuja, 1, count);
             }else if (mensajes.get(i).getSenderId() == amigo){
                 ventanaChat.getRowConstraints().add(row);
+                burbuja.setBackground(new Background(new BackgroundFill(Color.CADETBLUE, new CornerRadii(5,5,5,5,false), Insets.EMPTY)));
+                ventanaChat.add(burbuja, 0, count);
             }
-        }
-        if (flag == 1) {
-            int count = 0;
-            for (int i = mensajes.size()-1 ; i >= 0  ; i--) {
-                System.out.println(mensajes.get(i).getText());
-                Label chat = new Label();
-                chat.setTextFill(Color.WHITE);
-                chat.setText(mensajes.get(i).getText());
-                chat.setWrapText(true);
-                chat.setTextOverrun(OverrunStyle.CLIP);
-                chat.setStyle("-fx-border-color:black");
-                if (mensajes.get(i).getSenderId() == id && mensajes.get(i).getRecipientId() == amigo) {
-                    chat.setBackground(new Background(new BackgroundFill(Color.DEEPSKYBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
-                    ventanaChat.add(chat, 1, count);
-                }else if (mensajes.get(i).getSenderId() == amigo){
-                    chat.setBackground(new Background(new BackgroundFill(Color.CADETBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
-                    ventanaChat.add(chat, 0, count);
-                }
-                count++;
-            }
+            ventanaContactor.setFitToWidth(true);
+            count++;
         }
     }
     @FXML
     private void limites(KeyEvent event) {
-        maxMensaje.setTextFill(Color.BLACK);
+        maxMensaje.setTextFill(Color.WHITE);
         maxMensaje.setText("0");
         if (mensaje.getText().length()>=0) {
             maxMensaje.setText(""+mensaje.getText().length());
@@ -195,5 +200,14 @@ public class ChatController implements Initializable {
         }else{
             enviar.setDisable(false);
         }
+    }
+
+    @FXML
+    private void colorBoton1(MouseEvent event) {
+        enviar.setBackground(new Background(new BackgroundFill(Color.web("#1a79b4"), new CornerRadii(10,10,10,10,false), Insets.EMPTY)));
+    }
+    @FXML
+    private void colorBoton2(MouseEvent event) {
+        buscar.setBackground(new Background(new BackgroundFill(Color.web("#1a79b4"), new CornerRadii(10,10,10,10,false), Insets.EMPTY)));
     }
 }

@@ -17,13 +17,9 @@ import javafx.scene.image.ImageView;
 import clasesAyuda.*;
 import java.io.File;
 import java.io.IOException;
-import static java.lang.Long.parseLong;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -41,20 +37,24 @@ import javafx.scene.text.Text;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import proyectoproyectoprogra.MotorClases.TwitterBot;
-import static proyectoproyectoprogra.MotorClases.TwitterBot.isNumeric;
+import twitter4j.DirectMessageList;
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.TwitterException;
@@ -80,31 +80,7 @@ public class InicioController implements Initializable,CambiaEscenas {
     
     Mensajes textos = new Mensajes();
     @FXML
-    private Button botonCambiarRespuestas;
-    @FXML
     private ScrollPane actividadReciente;
-    @FXML
-    private Pane planoRespuestas;
-    @FXML
-    private Button cambiarMensajeAutomatico;
-    @FXML
-    private Button cambiarMensajePrivado;
-    @FXML
-    private Button guardarMensajes;
-    @FXML
-    private Button predeterminado;
-    @FXML
-    private TextArea cambios;
-    @FXML
-    private Button volver;
-    @FXML
-    private Text encabezado1;
-    @FXML
-    private Label mensaje1;
-    @FXML
-    private Label mensaje2;
-    @FXML
-    private Text encabezado2;
     @FXML
     private Label maximo;
     @FXML
@@ -135,6 +111,8 @@ public class InicioController implements Initializable,CambiaEscenas {
     private Button enviarMensaje;
     @FXML
     private ListView<User> listaUsuarios;
+    @FXML
+    private Button recargar;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
@@ -147,22 +125,9 @@ public class InicioController implements Initializable,CambiaEscenas {
         tweet.setWrapText(true);
         cuenta.setWrapText(true);
         seguirCuenta.setWrapText(true);
-        cambios.setWrapText(true);
         //botones y labels que no usare
         maximo.setVisible(false);
         lim.setVisible(false);
-        //todo el plano que tiene las opciones para cambiar respuestas
-        planoRespuestas.setVisible(false);
-        mensaje1.setVisible(false);
-        mensaje2.setVisible(false); 
-        encabezado1.setVisible(false);
-        encabezado2.setVisible(false);
-        volver.setVisible(false);
-        cambios.setVisible(false);
-        predeterminado.setVisible(false);
-        guardarMensajes.setVisible(false);
-        cambiarMensajePrivado.setVisible(false);
-        cambiarMensajeAutomatico.setVisible(false);
         volverTweet.setVisible(false);
         volverSeguir.setVisible(false);
         buscar.setVisible(false);
@@ -187,19 +152,18 @@ public class InicioController implements Initializable,CambiaEscenas {
 
     public GridPane crearTweet(int j, List<Status> statuses) throws TwitterException, IOException{
         GridPane tweet = new GridPane();
-        tweet.setPrefSize(460, 380);
-        tweet.setMinSize(460, 380);
-        tweet.setMaxSize(460, 380);
+        tweet.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(18,18,18,18,false), Insets.EMPTY)));
         ColumnConstraints column2 = new ColumnConstraints(450);
         tweet.getColumnConstraints().add(column2);
         RowConstraints row1 = new RowConstraints(50);
-        RowConstraints row2 = new RowConstraints(280);
+        RowConstraints row2 = new RowConstraints();
+        row2.setVgrow(Priority.ALWAYS);
         RowConstraints row3 = new RowConstraints(50);
         tweet.getRowConstraints().add(row1);
         tweet.getRowConstraints().add(row2);
         tweet.getRowConstraints().add(row3);
         HBox casilla1 = new HBox();
-        HBox casilla3 = new HBox();
+        VBox casilla3 = new VBox();
         HBox casilla2 = new HBox();
         TextFlow texto = new TextFlow();
         String[] content = statuses.get(j).getText().split(" ");
@@ -212,9 +176,10 @@ public class InicioController implements Initializable,CambiaEscenas {
             }
             texto.getChildren().add(word);
         }
-        ImageView foto = ImageViewBuilder.create().image(new Image(statuses.get(j).getUser().get400x400ProfileImageURL())).build();
-        foto.setFitHeight(50);
-        foto.setFitWidth(50);
+        Image imagen = new Image(statuses.get(j).getUser().get400x400ProfileImageURL());
+        Circle cuadro = new Circle(25);
+        ImagePattern pattern = new ImagePattern(imagen);
+        cuadro.setFill(pattern);
         Label id = new Label();
         id.setText(statuses.get(j).getUser().getName()+"\n  @"+statuses.get(j).getUser().getScreenName());
         Button like = handleNewLike(j, statuses);
@@ -236,21 +201,24 @@ public class InicioController implements Initializable,CambiaEscenas {
         if (statuses.get(j).getUser().getScreenName().equals("javinMoraga")) {
             Button eliminar = handleEliminar(j, statuses);
             eliminar.setText("X");
+            eliminar.setPrefSize(20, 20);
             casilla2.getChildren().addAll(like,retweet, eliminar);
         }else{
             casilla2.getChildren().addAll(like,retweet);
         }
-        casilla1.getChildren().addAll(foto,id);
-        casilla3.setFillHeight(true);
+        casilla1.getChildren().addAll(cuadro,id);
+        casilla3.setFillWidth(true);
         casilla3.setAlignment(Pos.BOTTOM_CENTER);
         if (statuses.get(j).getMediaEntities().length!=0) {
             ImageView contentImg = ImageViewBuilder.create().image(new Image(statuses.get(j).getMediaEntities()[0].getMediaURL())).build();
-            contentImg.setFitHeight(200);
-            contentImg.setFitWidth(200);
+            contentImg.setFitHeight(350);
+            contentImg.setPreserveRatio(true);
+            contentImg.setFitWidth(450);
             casilla3.getChildren().addAll(texto,contentImg);
         }else{
             casilla3.getChildren().addAll(texto);
         }
+        casilla3.maxHeightProperty().bind(casilla3.heightProperty());
         tweet.add(casilla1, 0, 0);
         tweet.add(casilla3, 0, 1);
         tweet.add(casilla2, 0, 2);
@@ -294,11 +262,11 @@ public class InicioController implements Initializable,CambiaEscenas {
             fondo.setFitHeight(120);
             ventana.getChildren().add(fondo);
         }
-        ImageView perfil = ImageViewBuilder.create().image(new Image(user.get400x400ProfileImageURL())).build();
-        perfil.setFitWidth(60);
-        perfil.setFitHeight(50);
-        perfil.setLayoutX(20);
-        perfil.setLayoutY(90);
+        Circle perfil = new Circle(30);
+        ImagePattern pattern = new ImagePattern(new Image(user.get400x400ProfileImageURL()));
+        perfil.setFill(pattern);
+        perfil.setLayoutX(30);
+        perfil.setLayoutY(100);
         ventana.getChildren().add(perfil);
     }
     public void insertRows(int count, GridPane timeline) {
@@ -321,22 +289,23 @@ public class InicioController implements Initializable,CambiaEscenas {
         grid.getChildren().removeAll(deleteNodes);
     }
     private void mostrarTimeline() throws IOException{
+        timeline.setStyle("-fx-background-color: #15202b");
         try {
             TwitterBot bot = new TwitterBot();
             yo = bot.getOwnUser();
             setProfile(yo);
             statuses = bot.obtenerTimeline();
-            timeline.setPrefSize(statuses.size()*50, statuses.size()*300);
-            timeline.setMinSize(statuses.size()*50, statuses.size()*300);
-            timeline.setMaxSize(statuses.size()*50, statuses.size()*300);
             ColumnConstraints column = new ColumnConstraints(450);
             timeline.getColumnConstraints().add(column);
             for (int i = 0; i < 10; i++) {
-                RowConstraints row = new RowConstraints(380);
+                RowConstraints row = new RowConstraints();
+                row.setVgrow(Priority.ALWAYS);
                 timeline.getRowConstraints().add(row);
             }
             for (int j = 0; j < 10; j++) {
                 GridPane tweet = crearTweet(j, statuses);
+                tweet.setScaleShape(true);
+                tweet.maxHeightProperty().bind(tweet.heightProperty());
                 tweet.setPadding(new Insets(5));
                 timeline.add(tweet, 0, j);
             }
@@ -344,6 +313,7 @@ public class InicioController implements Initializable,CambiaEscenas {
             actividadReciente.setContent(timeline);
             actividadReciente.fitToWidthProperty().set(true);
             actividadReciente.fitToHeightProperty().set(true);
+            actividadReciente.setFitToWidth(true);
             actividadReciente.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
         } catch (TwitterException ex) {
             mostrarError(ex.getErrorMessage());
@@ -353,6 +323,7 @@ public class InicioController implements Initializable,CambiaEscenas {
     private Button handleEliminar(int j, List<Status> statuses) throws TwitterException, IOException{
         TwitterBot bot = new TwitterBot();
         Button eliminar = new Button();
+        eliminar.setStyle("-fx-background-radius: 10 10 10 10; -fx-background-color:#8899a6");
         eliminar.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -372,24 +343,25 @@ public class InicioController implements Initializable,CambiaEscenas {
     private Button handleNewLike(int j, List<Status> statuses) throws TwitterException, IOException{
         TwitterBot bot = new TwitterBot();
         Button like = new Button();
+        like.setStyle("-fx-background-radius: 10 10 10 10; -fx-background-color:#8899a6");
         like.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 try {
                     bot.likeTweet(statuses.get(j).getId());
-                    like.setStyle("-fx-background-color:#DC143C");
+                    like.setStyle("-fx-background-color:#DC143C; -fx-background-radius: 10 10 10 10");
                 } catch (TwitterException ex) {
                     if (ex.getErrorMessage().equals("You have already favorited this status.")) {
                         try {
                             bot.dislikeTweet(statuses.get(j).getId());
-                            like.setStyle("-fx-background-color:");
+                            like.setStyle("-fx-background-color:#8899a6; -fx-background-radius: 10 10 10 10");
                         } catch (TwitterException ex1) { try { mostrarError(ex1.getErrorMessage()); } catch (IOException ex2) { } }
                     }else{ try { mostrarError(ex.getErrorMessage()); } catch (IOException ex1) { } }
                 }
             }
         });
         if (statuses.get(j).isFavorited()) {
-            like.setStyle("-fx-background-color:#DC143C");
+            like.setStyle("-fx-background-color:#DC143C; -fx-background-radius: 10 10 10 10");
         }
         return like;
     }
@@ -397,83 +369,44 @@ public class InicioController implements Initializable,CambiaEscenas {
     private Button handleNewRetweet(int j, List<Status> statuses) throws TwitterException, IOException{
         TwitterBot bot = new TwitterBot();
         Button retweet = new Button();
+        retweet.setStyle("-fx-background-color:#8899a6; -fx-background-radius: 10 10 10 10");
         retweet.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 try {
                     bot.retweet(statuses.get(j).getId());
-                    retweet.setStyle("-fx-background-color:#4169E1");
+                    retweet.setStyle("-fx-background-color:#4169E1; -fx-background-radius: 10 10 10 10");
                 } catch (TwitterException ex) {
                     if (ex.getErrorMessage().equals("You have already retweeted this Tweet.")) {
                         try {
                             bot.unRetweet(statuses.get(j).getId());
-                            retweet.setStyle("-fx-background-color:"); 
+                            retweet.setStyle("-fx-background-color:#8899a6; -fx-background-radius: 10 10 10 10"); 
                         } catch (TwitterException ex1) { try { mostrarError(ex1.getErrorMessage()); } catch (IOException ex2) { } }
                     }else{ try { mostrarError(ex.getErrorMessage()); } catch (IOException ex1) { } }
                 }
             }
         });
         if (statuses.get(j).isRetweeted()) {
-            retweet.setStyle("-fx-background-color:#4169E1");
+            retweet.setStyle("-fx-background-color:#4169E1; -fx-background-radius: 10 10 10 10");
         }
         return retweet;
     }
-    
-    @FXML
-    private void abrirCambiaRespuesta(ActionEvent event) {
-        mostrarMensajesPredeterminados(true);
-        mostrarInicio(false);
-    }
 
     @FXML
-    private void guardarCambios(ActionEvent event) {
-        Mensajes men = new Mensajes();
-        cambios.setVisible(false);
-        if(cambio == 1){
-            men.setMensajeReacciones(cambios.getText());
-            mensaje1.setText(men.getMensajeReacciones());
-        }
-        if(cambio == 2){
-            men.setMensajePrivado(cambios.getText());
-            mensaje2.setText(men.getMensajePrivado());
-        }
-    }
-
-    @FXML
-    private void volverPredeterminado(ActionEvent event) {
-    }
-
-    @FXML
-    private void cerrarCambiaRespuesta(ActionEvent event) throws TwitterException, IOException {
+    private void volver(ActionEvent event) throws TwitterException, IOException {
         tweet.clear();
         cuenta.clear();
         seguirCuenta.clear();
-        cambios.clear();
         maximo.setText("0");
         mostrarTweetear(false);
         mostrarSeguir(false);
-        mostrarMensajesPredeterminados(false);
         mostrarInicio(true);
         setProfile(yo);
-    }
-
-    @FXML
-    private void cambiarReacciones(ActionEvent event) {
-        cambio = 1;
-        cambios.setText(null);
-        cambios.setVisible(true);
-    }
-
-    @FXML
-    private void cambiarPrivado(ActionEvent event) {
-        cambio = 2;
-        cambios.setText(null);
-        cambios.setVisible(true);
     }
     
     @FXML
     private void limites(KeyEvent event) {
-        maximo.setTextFill(Color.BLACK);
+        maximo.setTextFill(Color.WHITE);
         enviar.setDisable(false); 
         maximo.setText("0");
         if (tweet.getText().length()>=0) {
@@ -490,7 +423,7 @@ public class InicioController implements Initializable,CambiaEscenas {
         twittear.setVisible(valor);
         Follow.setVisible(valor);
         Repli.setVisible(valor);
-        botonCambiarRespuestas.setVisible(valor);
+        recargar.setVisible(valor);
         enviarMensaje.setVisible(valor);
     }
 
@@ -521,20 +454,6 @@ public class InicioController implements Initializable,CambiaEscenas {
         stage.setScene(scene);
         stage.show();
 
-    }
-
-    @Override
-    public void mostrarMensajesPredeterminados(boolean valor) {
-        planoRespuestas.setVisible(valor);
-        mensaje1.setVisible(valor);
-        mensaje2.setVisible(valor); 
-        encabezado1.setVisible(valor);
-        encabezado2.setVisible(valor);
-        volver.setVisible(valor);
-        predeterminado.setVisible(valor);
-        guardarMensajes.setVisible(valor);
-        cambiarMensajePrivado.setVisible(valor);
-        cambiarMensajeAutomatico.setVisible(valor);
     }
 
     private void mostrarError(String error) throws IOException{
@@ -587,8 +506,8 @@ public class InicioController implements Initializable,CambiaEscenas {
             listaUsuarios.setCellFactory(new Callback<ListView<User>, ListCell<User>>() {
                 @Override
                 public ListCell<User> call(ListView<User> param) {
-                     ListCell<User> cell = new ListCell<User>() {
-                         @Override
+                    ListCell<User> cell = new ListCell<User>() {
+                        @Override
                             protected void updateItem(User usuario, boolean empty) {
                                 super.updateItem(usuario, empty);
                                 if(usuario != null) {
@@ -597,47 +516,98 @@ public class InicioController implements Initializable,CambiaEscenas {
                                     setText(null);
                                 }
                             }
-                         };
+                        };
                         return cell;
                     }
                 });
-                listaUsuarios.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        try {
-                            setProfile(listaUsuarios.getSelectionModel().getSelectedItem());
-                            Button seguir = new Button();
-                            boolean validar = bot.validarSeguidos(listaUsuarios.getSelectionModel().getSelectedItem().getId());
-                            if (validar) {
-                                seguir.setText("Dejar de seguir");
-                            }else{
-                                seguir.setText("Seguir");
-                            }
-                            seguir.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent event) {
-                                    if (validar) {
-                                        try {
-                                            bot.dejarSeguir(listaUsuarios.getSelectionModel().getSelectedItem().getScreenName());
-                                        } catch (TwitterException ex) {}
-                                    }else{
-                                        try {
-                                            bot.seguirUsuario(listaUsuarios.getSelectionModel().getSelectedItem().getScreenName());
-                                        } catch (TwitterException ex) {}
-                                    }
-                                    seguir.setDisable(true);
+            listaUsuarios.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    try {
+                        setProfile(listaUsuarios.getSelectionModel().getSelectedItem());
+                        Button seguir = new Button();
+                        seguir.setStyle("-fx-background-color: #1da1f2");
+                        seguir.setStyle("-fx-background-radius: 10 10 10 10");
+                        boolean validar = bot.validarSeguidos(listaUsuarios.getSelectionModel().getSelectedItem().getId());
+                        if (validar) {
+                            seguir.setText("Dejar de seguir");
+                        }else{
+                            seguir.setText("Seguir");
+                        }
+                        seguir.setTextFill(Color.WHITE);
+                        seguir.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent event) {
+                                if (validar) {
+                                    try {
+                                        bot.dejarSeguir(listaUsuarios.getSelectionModel().getSelectedItem().getScreenName());
+                                    } catch (TwitterException ex) {}
+                                }else{
+                                    try {
+                                        bot.seguirUsuario(listaUsuarios.getSelectionModel().getSelectedItem().getScreenName());
+                                    } catch (TwitterException ex) {}
                                 }
-                            });
-                            seguir.setLayoutX(150);
-                            seguir.setLayoutY(120);
-                            ventana.getChildren().add(seguir);
-                        } catch (IOException ex) {
-                            try {
-                                mostrarError(ex.getMessage());
-                            } catch (IOException ex1) {}
-                        } catch (TwitterException ex) {}
-                    }
-                });
+                                seguir.setDisable(true);
+                            }
+                        });
+                        seguir.setLayoutX(150);
+                        seguir.setLayoutY(120);
+                        ventana.getChildren().add(seguir);
+                    } catch (IOException ex) {
+                        try {
+                            mostrarError(ex.getMessage());
+                        } catch (IOException ex1) {}
+                    } catch (TwitterException ex) {}
+                }
+            });
         }
     }
+
+    @FXML
+    private void colorBoton1(MouseEvent event) {
+        buscar.setBackground(new Background(new BackgroundFill(Color.web("#1a79b4"), new CornerRadii(10,10,10,10,false), Insets.EMPTY)));
+    }
+    @FXML
+    private void colorBoton2(MouseEvent event) {
+        enviarArchivo.setBackground(new Background(new BackgroundFill(Color.web("#1a79b4"), new CornerRadii(10,10,10,10,false), Insets.EMPTY)));
+    }
+    @FXML
+    private void colorBoton3(MouseEvent event) {
+        enviar.setBackground(new Background(new BackgroundFill(Color.web("#1a79b4"), new CornerRadii(10,10,10,10,false), Insets.EMPTY)));
+    }
+    @FXML
+    private void colorBoton4(MouseEvent event) {
+        volverTweet.setBackground(new Background(new BackgroundFill(Color.web("#1a79b4"), new CornerRadii(10,10,10,10,false), Insets.EMPTY)));
+    }
+    @FXML
+    private void colorBoton5(MouseEvent event) {
+        Follow.setBackground(new Background(new BackgroundFill(Color.web("#1a79b4"), new CornerRadii(10,10,10,10,false), Insets.EMPTY)));
+    }
+    @FXML
+    private void colorBoton6(MouseEvent event) {
+        twittear.setBackground(new Background(new BackgroundFill(Color.web("#1a79b4"), new CornerRadii(10,10,10,10,false), Insets.EMPTY)));
+    }
+    @FXML
+    private void colorBoton7(MouseEvent event) {
+        Repli.setBackground(new Background(new BackgroundFill(Color.web("#1a79b4"), new CornerRadii(10,10,10,10,false), Insets.EMPTY)));
+    }
+    @FXML
+    private void colorBoton8(MouseEvent event) {
+        recargar.setBackground(new Background(new BackgroundFill(Color.web("#1a79b4"), new CornerRadii(10,10,10,10,false), Insets.EMPTY)));
+    }
+    @FXML
+    private void colorBoton9(MouseEvent event) {
+        volverSeguir.setBackground(new Background(new BackgroundFill(Color.web("#1a79b4"), new CornerRadii(10,10,10,10,false), Insets.EMPTY)));
+    }
+    @FXML
+    private void colorBoton10(MouseEvent event) {
+        enviarMensaje.setBackground(new Background(new BackgroundFill(Color.web("#1a79b4"), new CornerRadii(10,10,10,10,false), Insets.EMPTY)));
+    }
+
+    @FXML
+    private void refresh(ActionEvent event) throws IOException {
+        timeline.getChildren().clear();
+        mostrarTimeline();
+    }
+
 }
