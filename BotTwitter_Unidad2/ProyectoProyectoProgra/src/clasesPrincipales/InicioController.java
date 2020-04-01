@@ -16,10 +16,13 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import clasesAyuda.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -479,14 +482,14 @@ public class InicioController implements Initializable,CambiaEscenas {
         flag = 1;
     }   
     @FXML
-    private void responderTweets(ActionEvent event) throws TwitterException, IOException {
+    private void responderTweets(ActionEvent event) throws IOException {
         try {
             TwitterBot bot= new TwitterBot();
             bot.responderTweet(timeline, actividadReciente, tweets);
             bot.responderSpam();
         } catch (IOException ex) {
             mostrarError(ex.getMessage());
-        }
+        } catch (TwitterException ex1) {}
     }
 
     @FXML
