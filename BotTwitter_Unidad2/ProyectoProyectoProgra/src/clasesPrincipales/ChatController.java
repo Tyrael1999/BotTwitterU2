@@ -107,7 +107,7 @@ public class ChatController implements Initializable {
     private void buscar(ActionEvent event) throws TwitterException, IOException { 
         listaUsuarios.getItems().clear();
         char[] nombre = null;
-        nombre = (buscador.getText()).toCharArray();
+        nombre = (buscador.getText()).toLowerCase().toCharArray();
         if (nombre.length == 0) {
             System.out.println("Ingrese texto");
         }else{
